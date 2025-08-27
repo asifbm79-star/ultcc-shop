@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - ultcc.shop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="login-body">
+
+    <div class="login-container">
+
+        <div id="login-form-container" class="form-container active">
+            <div class="form-header">
+                <h1>Login</h1>
+                <div class="form-logo">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+                    <span>ULTCC</span>
+                </div>
+            </div>
+            <form id="login-form">
+                <div class="input-group">
+                    <input type="email" id="login-email" required>
+                    <label for="login-email">Enter your email</label>
+                </div>
+                <div class="input-group">
+                    <input type="password" id="login-password" required>
+                    <label for="login-password">Enter your password</label>
+                </div>
+                <div class="form-options">
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="remember-me">
+                        <span class="checkmark"></span>
+                        Remember me
+                    </label>
+                    <a href="#" class="forgot-password">Forgot password?</a>
+                </div>
+                <button type="submit" class="submit-btn">Log In</button>
+                <p id="login-error" class="error-message"></p>
+            </form>
+            <p class="form-switcher">Don't have an account? <a href="#" id="show-register">Register</a></p>
+        </div>
+
+        <div id="register-form-container" class="form-container">
+            <div class="form-header">
+                <h1>Register</h1>
+                <div class="form-logo">
+                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+                    <span>ULTCC</span>
+                </div>
+            </div>
+            <form id="register-form">
+                <div class="input-group">
+                    <input type="email" id="register-email" required>
+                    <label for="register-email">Enter your email</label>
+                </div>
+                <div class="input-group">
+                    <input type="password" id="register-password" required>
+                    <label for="register-password">Create a strong password</label>
+                </div>
+                <button type="submit" class="submit-btn">Create Account</button>
+                <p id="register-error" class="error-message"></p>
+                <ul id="password-reqs" class="password-reqs">
+                    <li id="req-length">At least 8 characters</li>
+                    <li id="req-upper">One uppercase letter</li>
+                    <li id="req-lower">One lowercase letter</li>
+                    <li id="req-number">One number</li>
+                    <li id="req-special">One special character (!@#$%)</li>
+                </ul>
+            </form>
+            <p class="form-switcher">Already have an account? <a href="#" id="show-login">Log In</a></p>
+        </div>
+    </div>
+
+    <script src="login.js"></script>
+</body>
+</html>

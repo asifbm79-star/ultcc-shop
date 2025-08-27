@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ultcc.shop - Wallet</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Sidebar Navigation -->
+    <div class="overlay" id="overlay"></div>
+    <nav class="sidebar" id="sidebar">
+        <!-- Sidebar content is the same as other pages -->
+        <div class="sidebar-header">
+            <div class="sidebar-logo">ULT<span>CC</span></div>
+            <button class="close-btn" id="close-btn" aria-label="Close menu">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+        <ul class="sidebar-nav">
+            <li><a href="index.html" class="nav-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                Home
+            </a></li>
+            <li><a href="cc_checker.html" class="nav-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+                CC Checker
+            </a></li>
+            <li><a href="index.html" class="nav-link">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                Bin Search
+            </a></li>
+            <li><a href="#" class="nav-link" onclick="alert('My Orders page is under construction.'); return false;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                My Orders
+            </a></li>
+            <li><a href="contact.html" class="nav-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                Raise Tickets
+            </a></li>
+            <li><a href="faq.html" class="nav-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                FAQ and Rules
+            </a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <button class="hamburger-menu" id="hamburger-btn" aria-label="Open menu">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+            <div class="logo">ULT<span>CC</span></div>
+            <div class="header-right"></div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main>
+            <section class="content-page">
+                <div class="wallet-header">
+                    <div class="balance-display">
+                        <span class="balance-label">Total Balance</span>
+                        <span id="balance-amount" class="balance-amount">Loading...</span>
+                    </div>
+                </div>
+
+                <div class="transactions-container">
+                    <div class="transactions-header">
+                        <h2>Transaction History</h2>
+                        <button id="new-deposit-btn" class="action-button">New Deposit</button>
+                    </div>
+                    <div class="table-wrapper">
+                        <table id="transactions-table">
+                            <thead>
+                                <tr>
+                                    <th>Transaction ID</th>
+                                    <th>Date</th>
+                                    <th>Description</th>
+                                    <th>Amount (€)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Transactions will be loaded here by JavaScript -->
+                                <tr><td colspan="4">Loading history...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Deposit Modal (Hidden by default) -->
+    <div id="deposit-modal-overlay" class="modal-overlay">
+        <div id="deposit-modal" class="modal-content">
+            <div class="modal-header">
+                <h2>Create Deposit</h2>
+                <button id="close-modal-btn" class="close-modal">&times;</button>
+            </div>
+            <form id="deposit-form">
+                <div class="form-group">
+                    <label for="crypto-select">Select Currency</label>
+                    <select id="crypto-select" required>
+                        <option value="" disabled selected>Choose a currency...</option>
+                        <option value="BTC">Bitcoin (BTC)</option>
+                        <option value="ETH">Ethereum (ETH)</option>
+                        <option value="LTC">Litecoin (LTC)</option>
+                        <option value="USDT">Tether (USDT)</option>
+                        <option value="XMR">Monero (XMR)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="deposit-amount">Amount (€)</label>
+                    <input type="number" id="deposit-amount" placeholder="Minimum 15 EUR" min="15" step="0.01" required>
+                </div>
+                <button type="submit" class="submit-btn">Create</button>
+                <p class="modal-info">Instant top-up automatic after 3 confirmations in crypto network.</p>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="wallet.js"></script>
+</body>
+</html>

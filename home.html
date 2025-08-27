@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to ultcc.shop</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Simple styles for the loading page */
+        .loading-body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+        .loader h1 {
+            font-size: 2rem;
+            color: var(--text-primary);
+        }
+        .loader p {
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body class="loading-body">
+
+    <div class="loader">
+        <h1>ULTCC</h1>
+        <p>Loading, please wait...</p>
+    </div>
+
+    <script>
+        // This script acts as a gatekeeper for the website.
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check the browser's session storage for a logged-in user.
+            const loggedInUser = sessionStorage.getItem('loggedInUser');
+
+            if (loggedInUser) {
+                // If a user session is found, redirect to the main index page.
+                window.location.replace('index.html');
+            } else {
+                // If no session is found, redirect to the login page.
+                window.location.replace('login.html');
+            }
+        });
+    </script>
+
+</body>
+</html>
