@@ -96,8 +96,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const amount = parseFloat(document.getElementById('deposit-amount').value);
         const currency = document.getElementById('crypto-select').value;
 
-if (amount < 30) {
-    alert('Minimum deposit amount is 30 EUR.');
+if (amount < 40) {
+    alert('Minimum deposit amount is 40 EUR.');
     return;
 }
 

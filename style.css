@@ -753,3 +753,18 @@ body {
 .card-brand-mastercard {
     background-color: #eb001b;
 }
+
+/* Add this new style to the end of your existing style.css file */
+
+.logo-link {
+    text-decoration: none; /* Removes the underline from the logo link */
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.logo {
+    /* The logo itself no longer needs positioning */
+    position: static;
+    transform: none;
+}
