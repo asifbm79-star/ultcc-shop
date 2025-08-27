@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ultcc.shop - Shopping Cart</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div id="splash-screen">
+        <div class="splash-logo">ULT<span>CC</span></div>
+    </div>
+
+    <!-- Sidebar Navigation -->
+    <div class="overlay" id="overlay"></div>
+    <nav class="sidebar" id="sidebar">
+        <!-- Sidebar content -->
+        <div class="sidebar-header">
+            <div class="sidebar-logo">ULT<span>CC</span></div>
+            <button class="close-btn" id="close-btn" aria-label="Close menu">&times;</button>
+        </div>
+        <ul class="sidebar-nav">
+            <li><a href="index.html" class="nav-link">... Home</a></li>
+            <li><a href="cc_checker.html" class="nav-link">... CC Checker</a></li>
+            <li><a href="wallet.html" class="nav-link">... Wallet</a></li>
+            <li><a href="my_orders.html" class="nav-link">... My Orders</a></li>
+            <li><a href="contact.html" class="nav-link">... Raise Tickets</a></li>
+            <li><a href="faq.html" class="nav-link">... FAQ and Rules</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <a href="index.html" class="logo-link">
+                <div class="logo">ULT<span>CC</span></div>
+            </a>
+            <button class="hamburger-menu" id="hamburger-btn" aria-label="Open menu">...</button>
+            <div class="header-right"></div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main>
+            <div class="cart-layout">
+                <!-- Cart Items -->
+                <div class="cart-items-panel">
+                    <h1>Shopping Cart</h1>
+                    <div id="cart-items-container">
+                        <!-- Cart items will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Cart Summary -->
+                <div class="cart-summary-panel">
+                    <div class="summary-box">
+                        <h2>Summary</h2>
+                        <div class="summary-row">
+                            <span>Subtotal</span>
+                            <span id="cart-subtotal">€0.00</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Total</span>
+                            <span id="cart-total">€0.00</span>
+                        </div>
+                        <button id="checkout-btn" class="action-button">Proceed to Checkout</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="cart.js"></script>
+    <script src="splash.js"></script>
+</body>
+</html>

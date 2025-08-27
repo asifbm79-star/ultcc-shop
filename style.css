@@ -788,3 +788,109 @@ body {
 .card-brand-mastercard { background-color: #eb001b; }
 .card-brand-amex { background-color: #2e77bc; }
 .card-brand-discover { background-color: #f68b1e; }
+
+/* Add these new styles to the end of your existing style.css file */
+
+/* --- New Button States --- */
+.preorder-btn {
+    background-color: #4a4a5a !important;
+    cursor: not-allowed !important;
+    color: var(--text-secondary) !important;
+}
+.instant-btn {
+    background-color: var(--success-green) !important;
+    border-color: var(--success-green) !important;
+    color: #fff !important;
+}
+.instant-btn:hover {
+    background-color: #27ae60 !important;
+    border-color: #27ae60 !important;
+}
+
+/* --- Cart Page Styles --- */
+.cart-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+    margin-top: 40px;
+}
+.cart-items-panel h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 15px;
+}
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+.item-name {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+.item-price {
+    font-size: 1rem;
+    color: var(--text-secondary);
+}
+.remove-item-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.8rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.remove-item-btn:hover {
+    color: var(--danger-red);
+}
+.summary-box {
+    background-color: var(--surface-color);
+    border-radius: 12px;
+    padding: 25px;
+    position: sticky;
+    top: 120px; /* Header height + margin */
+}
+.summary-box h2 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    font-size: 1rem;
+    color: var(--text-secondary);
+}
+.summary-row.total {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-top: 20px;
+}
+.summary-box .action-button {
+    width: 100%;
+    margin-top: 20px;
+}
+.summary-box .action-button:disabled {
+    background-color: var(--border-color);
+    cursor: not-allowed;
+}
+.empty-cart-message {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    padding: 40px 0;
+    text-align: center;
+}
+
+/* Responsive Cart */
+@media (max-width: 768px) {
+    .cart-layout {
+        grid-template-columns: 1fr;
+    }
+}

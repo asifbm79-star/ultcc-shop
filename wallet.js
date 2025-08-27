@@ -6,6 +6,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const loggedInUserEmail = sessionStorage.getItem('loggedInUser');
     let depositTimer; // Variable to hold the timer interval
+        // --- Modal Handling ---
+    // ...
+    backToDepositBtn.addEventListener('click', () => {
+        // NEW: Add confirmation
+        const userConfirmed = confirm('Are you sure you want to go back? This payment session will be cancelled.');
+        if (userConfirmed) {
+            modalFlipper.classList.remove('is-flipped');
+            clearInterval(depositTimer);
+        }
+    });
+    // ...
+
+    // --- Deposit Form Submission ---
+    depositForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const amount = parseFloat(document.getElementById('deposit-amount').value);
+        const currency = document.getElementById('crypto-select').value;
+        
+        // NEW: Max deposit limit
+        if (amount > 200) {
+            alert('Maximum deposit amount is 200 EUR.');
+            return;
+        }
+
+        showPaymentDetails(currency, amount);
+    });
+
 
     // --- Element References ---
     const balanceAmountEl = document.getElementById('balance-amount');
