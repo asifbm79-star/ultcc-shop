@@ -894,3 +894,134 @@ body {
         grid-template-columns: 1fr;
     }
 }
+/* Add these new styles to the end of your existing style.css file */
+
+/* --- Notification System Styles --- */
+.notification-container {
+    position: relative;
+}
+.notification-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    padding: 10px;
+    color: var(--text-secondary);
+}
+.notification-btn:hover {
+    color: var(--primary-violet);
+}
+.notification-dot {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 8px;
+    height: 8px;
+    background-color: var(--danger-red);
+    border-radius: 50%;
+    border: 2px solid var(--background-dark);
+}
+.notification-panel {
+    position: absolute;
+    top: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 350px;
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, top 0.2s;
+    z-index: 5000;
+}
+.notification-panel.active {
+    opacity: 1;
+    visibility: visible;
+    top: 140%;
+}
+.notification-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+.notification-header h3 {
+    font-size: 1rem;
+    color: #fff;
+}
+.notification-body {
+    max-height: 400px;
+    overflow-y: auto;
+}
+.notification-item {
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+.notification-item:last-child {
+    border-bottom: none;
+}
+.item-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 5px;
+}
+.item-body {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
+.item-date {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    opacity: 0.7;
+}
+
+/* --- Friday Crate Section Styles --- */
+.friday-crate-section {
+    background: linear-gradient(45deg, var(--primary-violet), #4a00e0);
+    border-radius: 12px;
+    padding: 40px;
+    margin-top: 30px;
+    color: #fff;
+}
+.friday-crate-section h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+}
+.crate-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+.crate-details {
+    flex-grow: 1;
+}
+.crate-details h3 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+}
+.crate-details p {
+    font-size: 1rem;
+    opacity: 0.8;
+    max-width: 400px;
+    margin-bottom: 20px;
+}
+.crate-price {
+    font-size: 2rem;
+    font-weight: 700;
+}
+.crate-action {
+    text-align: center;
+}
+.crate-action .action-button {
+    min-width: 200px;
+    margin-bottom: 10px;
+}
+.crate-timer {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
