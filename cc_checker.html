@@ -14,6 +14,7 @@
     <!-- Sidebar Navigation -->
     <div class="overlay" id="overlay"></div>
     <nav class="sidebar" id="sidebar">
+        <!-- Sidebar content is the same as other pages -->
         <div class="sidebar-header">
             <div class="sidebar-logo">ULT<span>CC</span></div>
             <button class="close-btn" id="close-btn" aria-label="Close menu">
@@ -29,9 +30,9 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
                 CC Checker
             </a></li>
-            <li><a href="index.html" class="nav-link">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                Bin Search
+            <li><a href="wallet.html" class="nav-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"></path></svg>
+                Wallet
             </a></li>
             <li><a href="my_orders.html" class="nav-link">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
@@ -62,24 +63,37 @@
         <main>
             <section class="content-page">
                 <h1>CC Checker</h1>
-                <p class="page-description">Enter card details below to check their status. This tool is for use with purchases from our shop only.</p>
                 
-                <div class="checker-container">
-                    <textarea id="card-input" placeholder="Enter cards here in format: 1234567890123456|MM|YYYY|CVC"></textarea>
-                    <button id="check-cards-btn" class="action-button">Check Cards</button>
-                    
-                    <div class="results-container">
-                        <h3>Results</h3>
-                        <div id="approved-cards" class="result-box approved">
-                            <h4>Approved</h4>
-                            <pre>...</pre>
-                        </div>
-                        <div id="declined-cards" class="result-box declined">
-                            <h4>Declined</h4>
-                            <pre>...</pre>
+                <!-- This container is shown to users WITH orders -->
+                <div id="checker-unlocked" class="hidden">
+                    <p class="page-description">Enter card details below to check their status. This tool is for use with purchases from our shop only.</p>
+                    <div class="checker-container">
+                        <textarea id="card-input" placeholder="Enter cards here in format: 1234567890123456|MM|YYYY|CVC"></textarea>
+                        <button id="check-cards-btn" class="action-button">Check Cards</button>
+                        <div class="results-container">
+                            <h3>Results</h3>
+                            <div id="approved-cards" class="result-box approved">
+                                <h4>Approved</h4>
+                                <pre>...</pre>
+                            </div>
+                            <div id="declined-cards" class="result-box declined">
+                                <h4>Declined</h4>
+                                <pre>...</pre>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- This container is shown to users WITHOUT orders -->
+                <div id="checker-locked">
+                    <div class="locked-content">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                        <h2>Checker Locked</h2>
+                        <p>You need to place at least one order to gain access to the CC Checker.</p>
+                        <button class="action-button" onclick="window.location.href='index.html'">Browse Shop</button>
+                    </div>
+                </div>
+
             </section>
         </main>
     </div>
