@@ -33,6 +33,11 @@ body {
     padding: 0 15px;
 }
 
+/* Helper class */
+.hidden {
+    display: none !important;
+}
+
 /* ------------------- */
 /* --- Login Page Styles --- */
 /* ------------------- */
@@ -110,46 +115,6 @@ body {
     color: var(--primary-violet);
 }
 
-.form-options {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
-    font-size: 0.9rem;
-}
-.checkbox-container {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    color: var(--text-secondary);
-}
-.checkbox-container input { display: none; }
-.checkmark {
-    width: 18px; height: 18px;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    margin-right: 8px;
-    display: inline-block;
-    position: relative;
-}
-.checkbox-container input:checked + .checkmark {
-    background-color: var(--primary-violet);
-    border-color: var(--primary-violet);
-}
-.checkmark::after {
-    content: ""; position: absolute; display: none;
-    left: 6px; top: 2px; width: 5px; height: 10px;
-    border: solid white; border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
-}
-.checkbox-container input:checked + .checkmark::after { display: block; }
-
-.forgot-password {
-    color: var(--text-secondary);
-    text-decoration: none;
-}
-.forgot-password:hover { color: var(--primary-violet); }
-
 .submit-btn {
     width: 100%;
     padding: 15px;
@@ -219,6 +184,24 @@ body {
     z-index: 1000;
 }
 
+.logo-link {
+    text-decoration: none;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.logo {
+    position: static;
+    transform: none;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 2px;
+}
+
+.logo span { color: var(--primary-violet); }
+
 .hamburger-menu {
     background: none;
     border: none;
@@ -229,31 +212,10 @@ body {
 
 .hamburger-menu svg { width: 28px; height: 28px; stroke: var(--text-primary); }
 
-.logo {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #fff;
-    letter-spacing: 2px;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-}
-
-.logo span { color: var(--primary-violet); }
-
 .header-right { 
     display: flex;
     align-items: center;
     gap: 15px;
-}
-
-#welcome-message {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 200px;
 }
 
 #logout-btn {
@@ -348,7 +310,7 @@ body {
     background-position: right 15px center; background-repeat: no-repeat; background-size: 1em;
 }
 
-/* --- Content Page (FAQ, Contact, Checker) Styles --- */
+/* --- Generic Content Page Styles (FAQ, Contact, etc.) --- */
 .content-page {
     background-color: var(--surface-color);
     border-radius: 12px;
@@ -368,7 +330,7 @@ body {
     font-size: 1.1rem;
 }
 
-/* FAQ Accordion */
+/* --- FAQ Page Styles --- */
 .faq-item { border-bottom: 1px solid var(--border-color); }
 .faq-item summary {
     font-size: 1.2rem; font-weight: 600; padding: 20px 0; cursor: pointer;
@@ -383,7 +345,7 @@ body {
 .faq-answer { padding: 0 10px 20px; line-height: 1.7; color: var(--text-secondary); }
 .faq-answer strong { color: var(--danger-red); font-weight: 600; }
 
-/* Contact Page */
+/* --- Contact Page Styles --- */
 .contact-info p { font-size: 1.1rem; margin-bottom: 25px; color: var(--text-secondary); }
 .contact-email-box {
     background-color: var(--background-dark); border: 1px solid var(--border-color);
@@ -399,34 +361,6 @@ body {
 .contact-btn:hover { background-color: var(--light-violet); }
 .contact-btn svg { width: 20px; height: 20px; }
 
-/* CC Checker Page */
-.checker-container textarea {
-    width: 100%; height: 200px; background-color: var(--background-dark);
-    border: 1px solid var(--border-color); color: var(--text-primary);
-    padding: 15px; border-radius: 8px; font-family: monospace;
-    font-size: 1rem; resize: vertical; margin-bottom: 20px;
-}
-.checker-container textarea:focus { outline: none; border-color: var(--primary-violet); }
-.action-button {
-    width: 100%; padding: 15px; font-size: 1.1rem; font-weight: 600;
-    cursor: pointer; background-color: var(--primary-violet); color: #fff;
-    border: none; border-radius: 8px; transition: background-color 0.2s;
-}
-.action-button:hover { background-color: var(--light-violet); }
-.results-container { margin-top: 30px; }
-.results-container h3 { font-size: 1.5rem; margin-bottom: 15px; }
-.result-box { border-radius: 8px; padding: 20px; margin-bottom: 15px; }
-.result-box h4 { margin-bottom: 10px; font-size: 1.2rem; }
-.result-box pre {
-    white-space: pre-wrap; word-wrap: break-word; font-family: monospace;
-    font-size: 0.9rem; color: var(--text-secondary);
-}
-.result-box.approved { background-color: rgba(46, 213, 115, 0.1); border: 1px solid var(--success-green); }
-.result-box.approved h4 { color: var(--success-green); }
-.result-box.declined { background-color: rgba(255, 71, 87, 0.1); border: 1px solid var(--danger-red); }
-.result-box.declined h4 { color: var(--danger-red); }
-/* Add these new styles to the end of your existing style.css file */
-
 /* --- Wallet Page Styles --- */
 .wallet-header {
     background: linear-gradient(90deg, var(--primary-violet) 0%, var(--light-violet) 100%);
@@ -435,32 +369,27 @@ body {
     margin-bottom: 30px;
     text-align: center;
 }
-
 .balance-display {
     display: flex;
     flex-direction: column;
     align-items: center;
     color: #fff;
 }
-
 .balance-label {
     font-size: 1.2rem;
     font-weight: 500;
     opacity: 0.8;
 }
-
 .balance-amount {
     font-size: 3rem;
     font-weight: 700;
     letter-spacing: 1px;
 }
-
 .transactions-container {
     background-color: var(--surface-color);
     border-radius: 12px;
     padding: 30px;
 }
-
 .transactions-header {
     display: flex;
     justify-content: space-between;
@@ -469,43 +398,32 @@ body {
     flex-wrap: wrap;
     gap: 15px;
 }
-
 .transactions-header h2 {
     color: #fff;
     font-size: 1.5rem;
 }
-
 .table-wrapper {
-    overflow-x: auto; /* Allows table to be scrolled on small screens */
+    overflow-x: auto;
 }
-
 #transactions-table {
     width: 100%;
     border-collapse: collapse;
     color: var(--text-secondary);
 }
-
 #transactions-table th, #transactions-table td {
     padding: 15px;
     text-align: left;
     border-bottom: 1px solid var(--border-color);
 }
-
 #transactions-table th {
     color: var(--text-primary);
     font-weight: 600;
     font-size: 0.9rem;
     text-transform: uppercase;
 }
-
-#transactions-table td {
-    font-size: 1rem;
-}
-
 #transactions-table tbody tr:last-child td {
     border-bottom: none;
 }
-
 .amount-credit {
     color: var(--success-green);
     font-weight: 600;
@@ -515,42 +433,55 @@ body {
     font-weight: 600;
 }
 
-
 /* --- Deposit Modal Styles --- */
 .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    z-index: 3000;
-    display: none; /* Hidden by default */
-    justify-content: center;
-    align-items: center;
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); z-index: 3000;
+    display: none; justify-content: center; align-items: center;
+    perspective: 1000px;
 }
-
+.modal-flipper {
+    position: relative;
+    width: 90%;
+    max-width: 500px;
+    transform-style: preserve-3d;
+    transition: transform 0.6s;
+}
+.modal-flipper.is-flipped {
+    transform: rotateY(180deg);
+}
 .modal-content {
     background-color: var(--surface-color);
     padding: 30px;
     border-radius: 12px;
-    width: 90%;
-    max-width: 500px;
     border: 1px solid var(--border-color);
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    top: 0;
+    left: 0;
 }
-
+.modal-content .form-group input, .modal-content .form-group select {
+    color: var(--text-primary);
+}
+#deposit-modal {
+    z-index: 2;
+    transform: rotateY(0deg);
+}
+#payment-details-modal {
+    transform: rotateY(180deg);
+}
 .modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
 }
-
 .modal-header h2 {
     color: #fff;
     font-size: 1.5rem;
 }
-
 .close-modal {
     background: none;
     border: none;
@@ -558,15 +489,77 @@ body {
     font-size: 2rem;
     cursor: pointer;
 }
-
+.back-modal {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: 500;
+}
+.back-modal:hover {
+    color: var(--primary-violet);
+}
 .modal-info {
     font-size: 0.9rem;
     color: var(--text-secondary);
     text-align: center;
     margin-top: 20px;
 }
-
-/* Add these new styles to the end of your existing style.css file */
+.payment-details-content {
+    text-align: center;
+}
+.payment-details-content p {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+.payment-details-content strong {
+    color: var(--primary-violet);
+    font-weight: 600;
+}
+.qr-code-container {
+    background-color: var(--background-dark);
+    padding: 20px;
+    border-radius: 8px;
+    display: inline-block;
+    margin-bottom: 20px;
+}
+#qr-code-img {
+    display: block;
+    width: 160px;
+    height: 160px;
+}
+.address-box {
+    display: flex;
+    background-color: var(--background-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+.address-box input {
+    flex-grow: 1;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    padding: 12px 15px;
+    font-size: 0.9rem;
+    font-family: monospace;
+    outline: none;
+}
+.address-box button {
+    background-color: var(--primary-violet);
+    color: #fff;
+    border: none;
+    padding: 0 20px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+.address-box button:hover {
+    background-color: var(--light-violet);
+}
 
 /* --- Orders Page Styles --- */
 #orders-table {
@@ -574,28 +567,20 @@ body {
     border-collapse: collapse;
     color: var(--text-secondary);
 }
-
 #orders-table th, #orders-table td {
     padding: 15px;
     text-align: left;
     border-bottom: 1px solid var(--border-color);
 }
-
 #orders-table th {
     color: var(--text-primary);
     font-weight: 600;
     font-size: 0.9rem;
     text-transform: uppercase;
 }
-
-#orders-table td {
-    font-size: 1rem;
-}
-
 #orders-table tbody tr:last-child td {
     border-bottom: none;
 }
-
 .status-badge {
     padding: 5px 10px;
     border-radius: 20px;
@@ -603,22 +588,18 @@ body {
     font-weight: 600;
     text-transform: capitalize;
 }
-
 .status-completed {
     background-color: rgba(46, 213, 115, 0.1);
     color: var(--success-green);
 }
-
 .status-pending {
     background-color: rgba(255, 165, 0, 0.1);
-    color: #ffa500; /* Orange */
+    color: #ffa500;
 }
-
 .status-failed {
     background-color: rgba(255, 71, 87, 0.1);
     color: var(--danger-red);
 }
-
 .action-button-small {
     background-color: var(--background-dark);
     color: var(--text-secondary);
@@ -629,36 +610,30 @@ body {
     font-size: 0.9rem;
     transition: all 0.2s;
 }
-
 .action-button-small:hover {
     background-color: var(--primary-violet);
     border-color: var(--primary-violet);
     color: #fff;
 }
 
-/* Add these new styles to the end of your existing style.css file */
-
-/* --- Revamped CC Checker Page Styles --- */
+/* --- CC Checker Page Styles --- */
 #purchases-table {
     width: 100%;
     border-collapse: collapse;
     color: var(--text-secondary);
     margin-bottom: 30px;
 }
-
 #purchases-table th, #purchases-table td {
     padding: 15px;
     text-align: left;
     border-bottom: 1px solid var(--border-color);
 }
-
 #purchases-table th {
     color: var(--text-primary);
     font-weight: 600;
     font-size: 0.9rem;
     text-transform: uppercase;
 }
-
 #purchases-table .check-btn {
     min-width: 100px;
 }
@@ -666,7 +641,6 @@ body {
     cursor: not-allowed;
     background-color: var(--border-color);
 }
-
 #check-results-area {
     background-color: var(--background-dark);
     border: 1px solid var(--border-color);
@@ -674,33 +648,42 @@ body {
     padding: 20px;
     text-align: center;
 }
-
 #check-results-area h3 {
     margin-bottom: 10px;
     color: #fff;
 }
-
 #check-results-area p {
     font-size: 1.1rem;
     font-weight: 600;
 }
+.result-checking { color: var(--text-secondary); }
+.result-approved { color: var(--success-green); }
+.result-declined { color: var(--danger-red); }
 
-.result-checking {
+#checker-locked {
+    text-align: center;
+    padding: 50px 20px;
+    background-color: var(--background-dark);
+    border: 1px dashed var(--border-color);
+    border-radius: 12px;
+}
+.locked-content svg {
+    stroke: var(--primary-violet);
+    margin-bottom: 20px;
+}
+.locked-content h2 {
+    font-size: 1.8rem;
+    color: #fff;
+    margin-bottom: 10px;
+}
+.locked-content p {
     color: var(--text-secondary);
+    margin-bottom: 30px;
 }
-.result-approved {
-    color: var(--success-green);
+.locked-content .action-button {
+    max-width: 200px;
+    margin: 0 auto;
 }
-.result-declined {
-    color: var(--danger-red);
-}
-
-/* Helper class to hide/show elements */
-.hidden {
-    display: none;
-}
-
-/* Add these new styles to the end of your existing style.css file */
 
 /* --- Results Table Section --- */
 .results-section {
@@ -746,140 +729,7 @@ body {
     color: #fff;
 }
 
-.card-brand-visa {
-    background-color: #1a1e78;
-}
-
-.card-brand-mastercard {
-    background-color: #eb001b;
-}
-
-/* Add this new style to the end of your existing style.css file */
-
-.logo-link {
-    text-decoration: none; /* Removes the underline from the logo link */
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-}
-
-.logo {
-    /* The logo itself no longer needs positioning */
-    position: static;
-    transform: none;
-}
-
-/* Add these new styles to the end of your existing style.css file */
-
-/* --- New Modal Flipper Styles --- */
-.modal-overlay {
-    perspective: 1000px; /* Enables 3D space for children */
-}
-
-.modal-flipper {
-    position: relative;
-    width: 90%;
-    max-width: 500px;
-    transform-style: preserve-3d;
-    transition: transform 0.6s;
-}
-
-.modal-flipper.is-flipped {
-    transform: rotateY(180deg);
-}
-
-.modal-flipper .modal-content {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden; /* Hides the back of the element when flipped */
-    top: 0;
-    left: 0;
-}
-
-#deposit-modal {
-    /* Front of the card */
-    z-index: 2;
-    transform: rotateY(0deg);
-}
-
-#payment-details-modal {
-    /* Back of the card */
-    transform: rotateY(180deg);
-}
-
-.back-modal {
-    background: none;
-    border: none;
-    color: var(--text-secondary);
-    font-size: 1rem;
-    cursor: pointer;
-    font-weight: 500;
-}
-.back-modal:hover {
-    color: var(--primary-violet);
-}
-
-/* --- Payment Details Panel Styles --- */
-.payment-details-content {
-    text-align: center;
-}
-
-.payment-details-content p {
-    color: var(--text-secondary);
-    line-height: 1.6;
-    margin-bottom: 20px;
-}
-
-.payment-details-content strong {
-    color: var(--primary-violet);
-    font-weight: 600;
-}
-
-.qr-code-container {
-    background-color: var(--background-dark);
-    padding: 20px;
-    border-radius: 8px;
-    display: inline-block;
-    margin-bottom: 20px;
-}
-
-#qr-code-img {
-    display: block;
-    width: 160px;
-    height: 160px;
-}
-
-.address-box {
-    display: flex;
-    background-color: var(--background-dark);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    overflow: hidden;
-    margin-bottom: 20px;
-}
-
-.address-box input {
-    flex-grow: 1;
-    background: none;
-    border: none;
-    color: var(--text-secondary);
-    padding: 12px 15px;
-    font-size: 0.9rem;
-    font-family: monospace;
-    outline: none;
-}
-
-.address-box button {
-    background-color: var(--primary-violet);
-    color: #fff;
-    border: none;
-    padding: 0 20px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background-color 0.2s;
-}
-
-.address-box button:hover {
-    background-color: var(--light-violet);
-}
+.card-brand-visa { background-color: #1a1e78; }
+.card-brand-mastercard { background-color: #eb001b; }
+.card-brand-amex { background-color: #2e77bc; }
+.card-brand-discover { background-color: #f68b1e; }
