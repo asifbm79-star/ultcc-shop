@@ -1,8 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
     // --- Configuration ---
-    // PASTE YOUR KEYS HERE
-    const API_KEY = '$2a$10$JVm0GDFS81IgTuZTZk.UDemdFi9u03aLpEO1spZB6KK8m3xd9/a3.'; // The same key as your users bin
-    const WALLET_BIN_ID = 'PASTE_YOUR_NEW_WALLET_BIN_ID_HERE'; 
+    // Use the same Master Key as before
+    const API_KEY = '$2a$10$JVm0GDFS81IgTuZTZk.UDemdFi9u03aLpEO1spZB6KK8m3xd9/a3.'; 
+    // PASTE THE NEW BIN ID YOU JUST CREATED FOR YOUR WALLETS HERE
+    const WALLET_BIN_ID = '68aedadf43b1c97be92ce2b7'; 
     const WALLET_BIN_URL = `https://api.jsonbin.io/v3/b/${WALLET_BIN_ID}`;
 
     const loggedInUserEmail = sessionStorage.getItem('loggedInUser');
@@ -32,10 +33,11 @@ document.addEventListener('DOMContentLoaded', () => {
             // 2. Find the wallet for the currently logged-in user
             let userWallet = allWallets.find(w => w.email === loggedInUserEmail);
 
-            // 3. If no wallet exists, create a new one for this user
+            // 3. If no wallet exists, create one in memory for this session
             if (!userWallet) {
                 userWallet = { email: loggedInUserEmail, balance: 0, transactions: [] };
-                // We won't save it back yet, we'll just display the zero-balance state
+                // NOTE: A real app would save this new wallet back to the DB, 
+                // but for this project, new users will just see a zero balance.
             }
 
             // 4. Update the UI with the wallet data
@@ -50,15 +52,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Function to Update the UI ---
     function updateUI(wallet) {
-        // Update balance
         balanceAmountEl.textContent = `€ ${wallet.balance.toFixed(2)}`;
 
-        // Update transactions table
         transactionsTableBody.innerHTML = ''; // Clear existing rows
         if (wallet.transactions.length === 0) {
             transactionsTableBody.innerHTML = `<tr><td colspan="4">No transactions found.</td></tr>`;
         } else {
-            // Sort transactions by date, newest first
             wallet.transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
             
             wallet.transactions.forEach(tx => {
@@ -67,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <td>${tx.id}</td>
                         <td>${tx.date}</td>
                         <td>${tx.description}</td>
-                        <td class="${tx.amount > 0 ? 'amount-credit' : 'amount-debit'}">€ ${tx.amount.toFixed(2)}</td>
+                        <td class="${tx.amount >= 0 ? 'amount-credit' : 'amount-debit'}">€ ${tx.amount.toFixed(2)}</td>
                     </tr>
                 `;
                 transactionsTableBody.innerHTML += row;
@@ -102,8 +101,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // In a real project, this would trigger a payment gateway.
-        // For this project, we will just show an alert.
         alert(`Deposit created!\n\nTo complete your deposit of €${amount.toFixed(2)}, please send ${currency} to the following address:\n\nFAKE${currency}ADDRESS123456789\n\n(This is a simulation. No actual transaction will occur.)`);
         
         hideModal();
