@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const WALLET_BIN_URL = `https://api.jsonbin.io/v3/b/${WALLET_BIN_ID}`;
 
     const loggedInUserEmail = sessionStorage.getItem('loggedInUser');
+    let depositTimer; // Variable to hold the timer interval
 
     // --- Element References ---
     const balanceAmountEl = document.getElementById('balance-amount');
@@ -17,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalFlipper = document.querySelector('.modal-flipper');
 
     // Payment details elements
+    const timerDisplay = document.getElementById('timer-display');
     const paymentAmountEl = document.getElementById('payment-amount');
     const paymentCurrencyEl = document.getElementById('payment-currency');
     const qrCodeImg = document.getElementById('qr-code-img');
@@ -32,9 +34,8 @@ document.addEventListener('DOMContentLoaded', () => {
         XMR: '44AFFq5kSiGBoZ4NMDwYtN18obc8A5S3jSHytLwsVLhG8i3QF8gBZH46'
     };
 
-    // --- Main Function to Load Wallet Data ---
+    // --- Main Functions (loadWalletData, updateUI) remain the same ---
     async function loadWalletData() {
-        // ... (This function remains the same as before)
         if (!loggedInUserEmail) return;
         try {
             const response = await fetch(`${WALLET_BIN_URL}/latest`, { headers: { 'X-Master-Key': API_KEY } });
@@ -52,10 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
             transactionsTableBody.innerHTML = `<tr><td colspan="4">Could not load transaction history.</td></tr>`;
         }
     }
-
-    // --- Function to Update the UI ---
     function updateUI(wallet) {
-        // ... (This function remains the same as before)
         balanceAmountEl.textContent = `€ ${wallet.balance.toFixed(2)}`;
         transactionsTableBody.innerHTML = '';
         if (wallet.transactions.length === 0) {
@@ -69,18 +67,45 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // --- Timer Logic ---
+    function startTimer(durationInSeconds) {
+        let timer = durationInSeconds;
+        clearInterval(depositTimer); // Clear any existing timer
+
+        depositTimer = setInterval(() => {
+            const minutes = parseInt(timer / 60, 10);
+            const seconds = parseInt(timer % 60, 10);
+
+            const displayMinutes = minutes < 10 ? "0" + minutes : minutes;
+            const displaySeconds = seconds < 10 ? "0" + seconds : seconds;
+
+            timerDisplay.textContent = `${displayMinutes}:${displaySeconds}`;
+
+            if (--timer < 0) {
+                clearInterval(depositTimer);
+                timerDisplay.textContent = "Expired!";
+                modalFlipper.classList.remove('is-flipped'); // Flip back automatically
+            }
+        }, 1000);
+    }
+
     // --- Modal Handling ---
     function showModal() {
         modalOverlay.style.display = 'flex';
-        modalFlipper.classList.remove('is-flipped'); // Ensure form is always shown first
+        modalFlipper.classList.remove('is-flipped');
+        clearInterval(depositTimer); // Stop timer when showing the form
     }
     function hideModal() {
         modalOverlay.style.display = 'none';
+        clearInterval(depositTimer); // Stop timer when closing modal
     }
 
     newDepositBtn.addEventListener('click', showModal);
     closeModalBtn.addEventListener('click', hideModal);
-    backToDepositBtn.addEventListener('click', () => modalFlipper.classList.remove('is-flipped'));
+    backToDepositBtn.addEventListener('click', () => {
+        modalFlipper.classList.remove('is-flipped');
+        clearInterval(depositTimer);
+    });
     modalOverlay.addEventListener('click', (e) => {
         if (e.target === modalOverlay) {
             hideModal();
@@ -103,17 +128,18 @@ document.addEventListener('DOMContentLoaded', () => {
         cryptoAddressInput.value = address;
         qrCodeImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${address}&bgcolor=1a1a29&color=e0e0e0&qzone=1`;
         
-        // Flip the modal card
         modalFlipper.classList.add('is-flipped');
+        startTimer(60 * 5); // Start a 5-minute timer
     }
 
     // --- Copy Address Button ---
     copyAddressBtn.addEventListener('click', () => {
         cryptoAddressInput.select();
-        document.execCommand('copy'); // Use this for iframe compatibility
-        copyAddressBtn.textContent = 'Copied!';
+        document.execCommand('copy');
+        const originalText = copyAddressBtn.querySelector('span').textContent;
+        copyAddressBtn.querySelector('span').textContent = 'Copied!';
         setTimeout(() => {
-            copyAddressBtn.textContent = 'Copy';
+            copyAddressBtn.querySelector('span').textContent = originalText;
         }, 2000);
     });
 

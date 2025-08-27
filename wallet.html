@@ -11,10 +11,8 @@
 </head>
 <body>
 
-    <!-- Sidebar Navigation -->
     <div class="overlay" id="overlay"></div>
     <nav class="sidebar" id="sidebar">
-        <!-- Sidebar content -->
         <div class="sidebar-header">
             <div class="sidebar-logo">ULT<span>CC</span></div>
             <button class="close-btn" id="close-btn" aria-label="Close menu">
@@ -50,7 +48,6 @@
     </nav>
 
     <div class="container">
-        <!-- Header -->
         <header class="header">
             <a href="index.html" class="logo-link">
                 <div class="logo">ULT<span>CC</span></div>
@@ -61,7 +58,6 @@
             <div class="header-right"></div>
         </header>
 
-        <!-- Main Content Area -->
         <main>
             <section class="content-page">
                 <div class="wallet-header">
@@ -95,10 +91,8 @@
         </main>
     </div>
 
-    <!-- Deposit Modal Container -->
     <div id="deposit-modal-overlay" class="modal-overlay">
         <div class="modal-flipper">
-            <!-- Front of Card: Deposit Form -->
             <div id="deposit-modal" class="modal-content">
                 <div class="modal-header">
                     <h2>Create Deposit</h2>
@@ -125,20 +119,23 @@
                 </form>
             </div>
 
-            <!-- Back of Card: Payment Details -->
             <div id="payment-details-modal" class="modal-content">
                 <div class="modal-header">
                     <h2>Complete Your Deposit</h2>
                     <button id="back-to-deposit-btn" class="back-modal">&larr; Back</button>
                 </div>
                 <div class="payment-details-content">
+                    <div id="timer-display" class="timer">05:00</div>
                     <p>To add <strong id="payment-amount">€40.00</strong> to your balance, send the exact amount of <strong id="payment-currency">BTC</strong> to the address below.</p>
                     <div class="qr-code-container">
                         <img id="qr-code-img" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=..." alt="QR Code">
                     </div>
                     <div class="address-box">
                         <input type="text" id="crypto-address" readonly>
-                        <button id="copy-address-btn">Copy</button>
+                        <button id="copy-address-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                            <span>Copy</span>
+                        </button>
                     </div>
                     <p class="modal-info">Your balance will be updated automatically after network confirmation.</p>
                 </div>
