@@ -96,10 +96,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const amount = parseFloat(document.getElementById('deposit-amount').value);
         const currency = document.getElementById('crypto-select').value;
 
-        if (amount < 15) {
-            alert('Minimum deposit amount is 15 EUR.');
-            return;
-        }
+if (amount < 30) {
+    alert('Minimum deposit amount is 30 EUR.');
+    return;
+}
 
         alert(`Deposit created!\n\nTo complete your deposit of €${amount.toFixed(2)}, please send ${currency} to the following address:\n\nFAKE${currency}ADDRESS123456789\n\n(This is a simulation. No actual transaction will occur.)`);
         
