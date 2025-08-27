@@ -635,3 +635,67 @@ body {
     border-color: var(--primary-violet);
     color: #fff;
 }
+
+/* Add these new styles to the end of your existing style.css file */
+
+/* --- Revamped CC Checker Page Styles --- */
+#purchases-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: var(--text-secondary);
+    margin-bottom: 30px;
+}
+
+#purchases-table th, #purchases-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+#purchases-table th {
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+
+#purchases-table .check-btn {
+    min-width: 100px;
+}
+#purchases-table .check-btn:disabled {
+    cursor: not-allowed;
+    background-color: var(--border-color);
+}
+
+#check-results-area {
+    background-color: var(--background-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+}
+
+#check-results-area h3 {
+    margin-bottom: 10px;
+    color: #fff;
+}
+
+#check-results-area p {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.result-checking {
+    color: var(--text-secondary);
+}
+.result-approved {
+    color: var(--success-green);
+}
+.result-declined {
+    color: var(--danger-red);
+}
+
+/* Helper class to hide/show elements */
+.hidden {
+    display: none;
+}
