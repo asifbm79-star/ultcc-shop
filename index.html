@@ -4,16 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ultcc.shop - Home</title>
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Shared Stylesheet -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- Sidebar Navigation (Same on all pages) -->
+    <!-- Sidebar Navigation -->
     <div class="overlay" id="overlay"></div>
     <nav class="sidebar" id="sidebar">
         <div class="sidebar-header">
@@ -31,9 +29,9 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
                 CC Checker
             </a></li>
-            <li><a href="index.html" class="nav-link">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                Bin Search
+            <li><a href="wallet.html" class="nav-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"></path></svg>
+                Wallet
             </a></li>
             <li><a href="#" class="nav-link" onclick="alert('My Orders page is under construction.'); return false;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
@@ -63,7 +61,7 @@
         <!-- Main Content Area -->
         <main>
             <section class="top-section">
-               <button id="wallet-btn" class="wallet-button" onclick="window.location.href='wallet.html'">
+                <button id="wallet-btn" class="wallet-button" onclick="window.location.href='wallet.html'">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"></path></svg>
                     Wallet
                 </button>
@@ -79,11 +77,28 @@
             <section class="search-section">
                 <h2>Search</h2>
                 <form class="search-grid">
-                    <div class="form-group"><label for="bin-search">Bins</label><input type="text" id="bin-search" placeholder="Type Bin and press enter"></div>
-                    <div class="form-group"><label for="zips">Zips</label><select id="zips"><option>All</option></select></div>
-                    <div class="form-group"><label for="bank">Bank</label><select id="bank"><option>All</option></select></div>
-                    <div class="form-group"><label for="country">Country</label><select id="country"><option>All</option></select></div>
-                    <div class="form-group"><label for="state">State</label><select id="state"><option>Select Country First</option></select></div>
+                    <div class="form-group">
+                        <label for="bin-search">Bins</label>
+                        <input type="text" id="bin-search" placeholder="e.g., 453903, 542418, 492903, 374201...">
+                    </div>
+                    <div class="form-group">
+                        <label for="country-select">Country</label>
+                        <select id="country-select">
+                            <option value="">All</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="bank-select">Bank</label>
+                        <select id="bank-select">
+                            <option value="">All</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="zip-select">Zip Codes</label>
+                        <select id="zip-select">
+                            <option value="">All</option>
+                        </select>
+                    </div>
                 </form>
             </section>
         </main>
@@ -91,6 +106,127 @@
 
     <!-- Shared JavaScript for sidebar -->
     <script src="script.js"></script>
+    
+    <!-- New JavaScript for Dynamic Search Dropdowns -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Data for Search Filters ---
+            const searchData = {
+                "United States": {
+                    banks: ["Chase Bank", "Bank of America", "Wells Fargo", "Citibank", "U.S. Bank", "PNC Bank", "Capital One", "TD Bank", "American Express", "Discover Bank", "Navy Federal Credit Union", "Ally Bank", "SunTrust Bank", "BB&T", "HSBC Bank USA"],
+                    zips: ["90210", "10001", "60601", "33109", "75201", "94102"]
+                },
+                "United Kingdom": {
+                    banks: ["HSBC", "Lloyds Bank", "Barclays", "NatWest", "Santander UK", "Standard Chartered", "Nationwide Building Society", "Royal Bank of Scotland", "Monzo", "Revolut", "Starling Bank", "The Co-operative Bank", "Virgin Money", "Metro Bank", "TSB Bank"],
+                    zips: ["SW1A 0AA", "W1A 1AA", "EC1A 1BB", "M1 1AE", "B1 1BB", "G1 1AA"]
+                },
+                "Canada": {
+                    banks: ["Royal Bank of Canada (RBC)", "Toronto-Dominion Bank (TD)", "Scotiabank", "Bank of Montreal (BMO)", "Canadian Imperial Bank of Commerce (CIBC)", "National Bank of Canada", "Desjardins Group", "HSBC Bank Canada", "Tangerine Bank", "Simplii Financial", "Manulife Bank", "ATB Financial", "Vancity", "EQ Bank", "Laurentian Bank"],
+                    zips: ["M5H 2N2", "V6C 3L6", "H3B 4G7", "T2P 5E6", "K1A 0B1", "G1R 4P8"]
+                },
+                "Australia": {
+                    banks: ["Commonwealth Bank", "Westpac", "ANZ Bank", "National Australia Bank (NAB)", "Macquarie Bank", "ING Australia", "Suncorp Bank", "Bank of Queensland", "Bendigo and Adelaide Bank", "AMP Bank", "ME Bank", "Up Bank", "HSBC Australia", "Citibank Australia", "Bankwest"],
+                    zips: ["2000", "3000", "4000", "6000", "5000", "2600"]
+                },
+                "Germany": {
+                    banks: ["Deutsche Bank", "Commerzbank", "KfW Bankengruppe", "DZ Bank", "HypoVereinsbank (UniCredit)", "Landesbank Baden-Württemberg", "BayernLB", "N26", "ING-DiBa", "Postbank", "DekaBank", "Helaba", "Norddeutsche Landesbank", "Comdirect Bank", "DKB"],
+                    zips: ["10117", "20095", "80331", "60311", "40213", "50667"]
+                },
+                "France": {
+                    banks: ["BNP Paribas", "Crédit Agricole", "Société Générale", "Groupe BPCE", "Crédit Mutuel", "La Banque Postale", "HSBC France", "Boursorama", "ING France", "Fortuneo Banque", "AXA Banque", "CIC", "LCL", "Hello bank!", "BforBank"],
+                    zips: ["75001", "69001", "13001", "31000", "59000", "33000"]
+                },
+                "India": {
+                    banks: ["State Bank of India (SBI)", "HDFC Bank", "ICICI Bank", "Axis Bank", "Kotak Mahindra Bank", "Punjab National Bank (PNB)", "Bank of Baroda", "Canara Bank", "Union Bank of India", "IDBI Bank", "IndusInd Bank", "Yes Bank", "Federal Bank", "RBL Bank", "Bandhan Bank"],
+                    zips: ["110001", "400001", "700001", "560001", "600001", "500001"]
+                },
+                "Brazil": {
+                    banks: ["Itaú Unibanco", "Banco do Brasil", "Bradesco", "Caixa Econômica Federal", "Santander Brasil", "BTG Pactual", "Banco Safra", "Nubank", "Banco Inter", "XP Inc.", "Sicoob", "Sicredi", "Banco Votorantim", "Banrisul", "Banco Original"],
+                    zips: ["01000-000", "20000-000", "70000-000", "40000-000", "50000-000", "30000-000"]
+                },
+                "Japan": {
+                    banks: ["Mitsubishi UFJ Financial Group (MUFG)", "Sumitomo Mitsui Financial Group (SMBC)", "Mizuho Financial Group", "Japan Post Bank", "Nomura Holdings", "Resona Holdings", "Shinsei Bank", "Aozora Bank", "Rakuten Bank", "Sony Bank", "Aeon Bank", "Seven Bank", "SBI Sumishin Net Bank", "PayPay Bank", "GMO Aozora Net Bank"],
+                    zips: ["100-0001", "530-0001", "450-0002", "810-0001", "060-0001", "980-0021"]
+                },
+                "Russia": {
+                    banks: ["Sberbank", "VTB Bank", "Gazprombank", "Alfa-Bank", "Rosselkhozbank", "Credit Bank of Moscow", "Tinkoff Bank", "Otkritie FC Bank", "Promsvyazbank", "Sovcombank", "Raiffeisenbank Russia", "Rosbank", "UniCredit Bank Russia", "Ak Bars Bank", "Bank Saint Petersburg"],
+                    zips: ["101000", "190000", "620014", "603000", "420111", "630099"]
+                },
+                "South Africa": {
+                    banks: ["Standard Bank", "First National Bank (FNB)", "Absa Group", "Nedbank", "Capitec Bank", "Investec", "African Bank", "TymeBank", "Discovery Bank", "Bidvest Bank", "Sasfin Bank", "Mercantile Bank", "Grindrod Bank", "Ubank", "Postbank"],
+                    zips: ["0001", "2001", "8001", "4001", "1201", "6001"]
+                },
+                "Nigeria": {
+                    banks: ["Access Bank", "Zenith Bank", "Guaranty Trust Bank (GTB)", "United Bank for Africa (UBA)", "First Bank of Nigeria", "Ecobank Nigeria", "Fidelity Bank", "Stanbic IBTC Bank", "Union Bank of Nigeria", "Sterling Bank", "Wema Bank", "Kuda Bank", "Opay", "PalmPay", "First City Monument Bank (FCMB)"],
+                    zips: ["100001", "900001", "500001", "200001", "300001", "101241"]
+                },
+                "Mexico": {
+                    banks: ["BBVA México", "Santander México", "Banorte", "Citibanamex", "HSBC México", "Scotiabank México", "Inbursa", "BanBajío", "Hey Banco", "Banco Azteca", "BanCoppel", "Compartamos Banco", "Actinver", "Multiva", "Afirme"],
+                    zips: ["06000", "44100", "64000", "72000", "22000", "97000"]
+                },
+                "Indonesia": {
+                    banks: ["Bank Mandiri", "Bank Rakyat Indonesia (BRI)", "Bank Central Asia (BCA)", "Bank Negara Indonesia (BNI)", "CIMB Niaga", "Bank Danamon", "Panin Bank", "OCBC NISP", "Permata Bank", "Bank Tabungan Negara (BTN)", "Jago", "SeaBank", "Bank Syariah Indonesia (BSI)", "Maybank Indonesia", "UOB Indonesia"],
+                    zips: ["10110", "40115", "60174", "50131", "20111", "90174"]
+                },
+                "Turkey": {
+                    banks: ["Ziraat Bankası", "Garanti BBVA", "Akbank", "İş Bankası", "Yapı Kredi", "Halkbank", "VakıfBank", "DenizBank", "QNB Finansbank", "TEB", "Odeabank", "Fibabanka", "Şekerbank", "Alternatif Bank", "Anadolubank"],
+                    zips: ["34000", "06000", "35000", "16000", "01000", "07000"]
+                }
+            };
+
+            // --- Element References ---
+            const countrySelect = document.getElementById('country-select');
+            const bankSelect = document.getElementById('bank-select');
+            const zipSelect = document.getElementById('zip-select');
+
+            // --- Populate Initial Country Dropdown ---
+            function populateCountries() {
+                const countries = Object.keys(searchData);
+                countries.sort(); // Sort alphabetically
+                countries.forEach(country => {
+                    const option = document.createElement('option');
+                    option.value = country;
+                    option.textContent = country;
+                    countrySelect.appendChild(option);
+                });
+            }
+
+            // --- Update Bank and Zip Dropdowns based on Country ---
+            function updateDependentDropdowns() {
+                const selectedCountry = countrySelect.value;
+                
+                // Clear previous options
+                bankSelect.innerHTML = '<option value="">All</option>';
+                zipSelect.innerHTML = '<option value="">All</option>';
+
+                if (selectedCountry && searchData[selectedCountry]) {
+                    const countryData = searchData[selectedCountry];
+                    
+                    // Populate banks
+                    countryData.banks.forEach(bank => {
+                        const option = document.createElement('option');
+                        option.value = bank;
+                        option.textContent = bank;
+                        bankSelect.appendChild(option);
+                    });
+
+                    // Populate zips
+                    countryData.zips.forEach(zip => {
+                        const option = document.createElement('option');
+                        option.value = zip;
+                        option.textContent = zip;
+                        zipSelect.appendChild(option);
+                    });
+                }
+            }
+
+            // --- Event Listener ---
+            countrySelect.addEventListener('change', updateDependentDropdowns);
+
+            // --- Initial Load ---
+            populateCountries();
+        });
+    </script>
 
 </body>
 </html>

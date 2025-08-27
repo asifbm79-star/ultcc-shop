@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
     // --- Configuration ---
-    // Your unique keys for the online database are now included.
     const API_KEY = '$2a$10$JVm0GDFS81IgTuZTZk.UDemdFi9u03aLpEO1spZB6KK8m3xd9/a3.'; 
     const BIN_ID = '68aece44ae596e708fd88790'; 
     const BIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
@@ -62,14 +61,13 @@ document.addEventListener('DOMContentLoaded', () => {
         loginError.textContent = 'Checking...';
 
         try {
-            // Fetch the latest user data from your online bin
             const response = await fetch(`${BIN_URL}/latest`, { 
                 headers: { 'X-Master-Key': API_KEY } 
             });
             if (!response.ok) throw new Error('Failed to fetch user data.');
             
             const data = await response.json();
-            const users = data.record.users || []; // Access the users array inside "record"
+            const users = data.record.users || [];
             const user = users.find(u => u.email === email && u.password === password);
 
             if (user) {
@@ -91,14 +89,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const password = document.getElementById('register-password').value;
         registerError.textContent = 'Processing...';
 
-        // 1. Validate password
         if (!validatePassword(password)) {
             registerError.textContent = 'Password does not meet all requirements.';
             return;
         }
 
         try {
-            // 2. GET the current list of users
             const resGet = await fetch(`${BIN_URL}/latest`, { 
                 headers: { 'X-Master-Key': API_KEY } 
             });
@@ -107,28 +103,25 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await resGet.json();
             const users = data.record.users || [];
 
-            // 3. Check if email already exists
             if (users.some(u => u.email === email)) {
                 registerError.textContent = 'An account with this email already exists.';
                 return;
             }
 
-            // 4. Add the new user to the list
             users.push({ email, password });
             
-            // 5. PUT the entire updated list back to the server
             const resPut = await fetch(BIN_URL, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-Master-Key': API_KEY
                 },
-                body: JSON.stringify({ users: users }) // Make sure to wrap it in the "users" key
+                body: JSON.stringify({ users: users })
             });
             if (!resPut.ok) throw new Error('Could not save new account.');
 
-            alert(`Account for "${email}" created successfully! You can now log in.`);
-            window.location.reload(); // Reload to switch to login form cleanly
+            // The alert() has been removed. The page will just reload.
+            window.location.reload();
 
         } catch (error) {
             console.error('Registration Error:', error);

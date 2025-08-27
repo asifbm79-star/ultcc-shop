@@ -40,18 +40,12 @@ document.addEventListener('DOMContentLoaded', function() {
     if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
     if (overlay) overlay.addEventListener('click', closeSidebar);
 
-    // --- Welcome Message & Logout Button ---
-    // Find the placeholder element in the header for the welcome message and logout button.
+    // --- Logout Button Functionality ---
+    // Find the placeholder element in the header for the logout button.
     const headerRight = document.querySelector('.header-right');
     
-    if (headerRight) {
-        // Create a welcome message element.
-        const welcomeEl = document.createElement('span');
-        welcomeEl.id = 'welcome-message';
-        welcomeEl.textContent = `Welcome, ${loggedInUserEmail}`;
-        headerRight.appendChild(welcomeEl);
-
-        // Dynamically create the logout button.
+    // Dynamically create and add the logout button if the placeholder exists.
+    if(headerRight) {
         const logoutBtn = document.createElement('button');
         logoutBtn.id = 'logout-btn';
         logoutBtn.textContent = 'Logout';
