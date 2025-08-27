@@ -14,7 +14,7 @@
     <!-- Sidebar Navigation -->
     <div class="overlay" id="overlay"></div>
     <nav class="sidebar" id="sidebar">
-        <!-- Sidebar content is the same as other pages -->
+        <!-- Sidebar content -->
         <div class="sidebar-header">
             <div class="sidebar-logo">ULT<span>CC</span></div>
             <button class="close-btn" id="close-btn" aria-label="Close menu">
@@ -30,11 +30,11 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
                 CC Checker
             </a></li>
-            <li><a href="index.html" class="nav-link">
-                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                Bin Search
+            <li><a href="wallet.html" class="nav-link active">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"></path></svg>
+                Wallet
             </a></li>
-            <li><a href="#" class="nav-link" onclick="alert('My Orders page is under construction.'); return false;">
+            <li><a href="my_orders.html" class="nav-link">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
                 My Orders
             </a></li>
@@ -52,10 +52,12 @@
     <div class="container">
         <!-- Header -->
         <header class="header">
+            <a href="index.html" class="logo-link">
+                <div class="logo">ULT<span>CC</span></div>
+            </a>
             <button class="hamburger-menu" id="hamburger-btn" aria-label="Open menu">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
             </button>
-            <div class="logo">ULT<span>CC</span></div>
             <div class="header-right"></div>
         </header>
 
@@ -68,7 +70,6 @@
                         <span id="balance-amount" class="balance-amount">Loading...</span>
                     </div>
                 </div>
-
                 <div class="transactions-container">
                     <div class="transactions-header">
                         <h2>Transaction History</h2>
@@ -85,7 +86,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Transactions will be loaded here by JavaScript -->
                                 <tr><td colspan="4">Loading history...</td></tr>
                             </tbody>
                         </table>
@@ -95,32 +95,54 @@
         </main>
     </div>
 
-    <!-- Deposit Modal (Hidden by default) -->
+    <!-- Deposit Modal Container -->
     <div id="deposit-modal-overlay" class="modal-overlay">
-        <div id="deposit-modal" class="modal-content">
-            <div class="modal-header">
-                <h2>Create Deposit</h2>
-                <button id="close-modal-btn" class="close-modal">&times;</button>
+        <div class="modal-flipper">
+            <!-- Front of Card: Deposit Form -->
+            <div id="deposit-modal" class="modal-content">
+                <div class="modal-header">
+                    <h2>Create Deposit</h2>
+                    <button id="close-modal-btn" class="close-modal">&times;</button>
+                </div>
+                <form id="deposit-form">
+                    <div class="form-group">
+                        <label for="crypto-select">Select Currency</label>
+                        <select id="crypto-select" required>
+                            <option value="" disabled selected>Choose a currency...</option>
+                            <option value="BTC">Bitcoin (BTC)</option>
+                            <option value="ETH">Ethereum (ETH)</option>
+                            <option value="LTC">Litecoin (LTC)</option>
+                            <option value="USDT">Tether (USDT)</option>
+                            <option value="XMR">Monero (XMR)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="deposit-amount">Amount (€)</label>
+                        <input type="number" id="deposit-amount" placeholder="Minimum 40 EUR" min="40" step="0.01" required>
+                    </div>
+                    <button type="submit" class="submit-btn">Create</button>
+                    <p class="modal-info">Instant top-up automatic after 3 confirmations in crypto network.</p>
+                </form>
             </div>
-            <form id="deposit-form">
-                <div class="form-group">
-                    <label for="crypto-select">Select Currency</label>
-                    <select id="crypto-select" required>
-                        <option value="" disabled selected>Choose a currency...</option>
-                        <option value="BTC">Bitcoin (BTC)</option>
-                        <option value="ETH">Ethereum (ETH)</option>
-                        <option value="LTC">Litecoin (LTC)</option>
-                        <option value="USDT">Tether (USDT)</option>
-                        <option value="XMR">Monero (XMR)</option>
-                    </select>
+
+            <!-- Back of Card: Payment Details -->
+            <div id="payment-details-modal" class="modal-content">
+                <div class="modal-header">
+                    <h2>Complete Your Deposit</h2>
+                    <button id="back-to-deposit-btn" class="back-modal">&larr; Back</button>
                 </div>
-                <div class="form-group">
-                    <label for="deposit-amount">Amount (€)</label>
-                    <input type="number" id="deposit-amount" placeholder="Minimum 30 EUR" min="30" step="0.01" required>
+                <div class="payment-details-content">
+                    <p>To add <strong id="payment-amount">€40.00</strong> to your balance, send the exact amount of <strong id="payment-currency">BTC</strong> to the address below.</p>
+                    <div class="qr-code-container">
+                        <img id="qr-code-img" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=..." alt="QR Code">
+                    </div>
+                    <div class="address-box">
+                        <input type="text" id="crypto-address" readonly>
+                        <button id="copy-address-btn">Copy</button>
+                    </div>
+                    <p class="modal-info">Your balance will be updated automatically after network confirmation.</p>
                 </div>
-                <button type="submit" class="submit-btn">Create</button>
-                <p class="modal-info">Instant top-up automatic after 3 confirmations in crypto network.</p>
-            </form>
+            </div>
         </div>
     </div>
 

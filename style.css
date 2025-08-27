@@ -768,3 +768,118 @@ body {
     position: static;
     transform: none;
 }
+
+/* Add these new styles to the end of your existing style.css file */
+
+/* --- New Modal Flipper Styles --- */
+.modal-overlay {
+    perspective: 1000px; /* Enables 3D space for children */
+}
+
+.modal-flipper {
+    position: relative;
+    width: 90%;
+    max-width: 500px;
+    transform-style: preserve-3d;
+    transition: transform 0.6s;
+}
+
+.modal-flipper.is-flipped {
+    transform: rotateY(180deg);
+}
+
+.modal-flipper .modal-content {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden; /* Hides the back of the element when flipped */
+    top: 0;
+    left: 0;
+}
+
+#deposit-modal {
+    /* Front of the card */
+    z-index: 2;
+    transform: rotateY(0deg);
+}
+
+#payment-details-modal {
+    /* Back of the card */
+    transform: rotateY(180deg);
+}
+
+.back-modal {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: 500;
+}
+.back-modal:hover {
+    color: var(--primary-violet);
+}
+
+/* --- Payment Details Panel Styles --- */
+.payment-details-content {
+    text-align: center;
+}
+
+.payment-details-content p {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.payment-details-content strong {
+    color: var(--primary-violet);
+    font-weight: 600;
+}
+
+.qr-code-container {
+    background-color: var(--background-dark);
+    padding: 20px;
+    border-radius: 8px;
+    display: inline-block;
+    margin-bottom: 20px;
+}
+
+#qr-code-img {
+    display: block;
+    width: 160px;
+    height: 160px;
+}
+
+.address-box {
+    display: flex;
+    background-color: var(--background-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.address-box input {
+    flex-grow: 1;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    padding: 12px 15px;
+    font-size: 0.9rem;
+    font-family: monospace;
+    outline: none;
+}
+
+.address-box button {
+    background-color: var(--primary-violet);
+    color: #fff;
+    border: none;
+    padding: 0 20px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.address-box button:hover {
+    background-color: var(--light-violet);
+}
