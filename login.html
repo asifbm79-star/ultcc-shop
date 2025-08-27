@@ -13,7 +13,6 @@
 
     <div class="login-container">
 
-        <!-- ============== LOGIN FORM ============== -->
         <div id="login-form-container" class="form-container active">
             <div class="form-header">
                 <h1>Login</h1>
@@ -31,23 +30,20 @@
                     <input type="password" id="login-password" required>
                     <label for="login-password">Enter your password</label>
                 </div>
-                
-                <!-- Simple Captcha -->
-                <div class="captcha-container">
+                <div class="form-options">
                     <label class="checkbox-container">
-                        <input type="checkbox" class="captcha-checkbox" required>
+                        <input type="checkbox" id="remember-me">
                         <span class="checkmark"></span>
-                        I am not a robot
+                        Remember me
                     </label>
+                    <a href="#" class="forgot-password">Forgot password?</a>
                 </div>
-
                 <button type="submit" class="submit-btn">Log In</button>
                 <p id="login-error" class="error-message"></p>
             </form>
             <p class="form-switcher">Don't have an account? <a href="#" id="show-register">Register</a></p>
         </div>
 
-        <!-- ============== REGISTRATION FORM ============== -->
         <div id="register-form-container" class="form-container">
             <div class="form-header">
                 <h1>Register</h1>
@@ -65,16 +61,6 @@
                     <input type="password" id="register-password" required>
                     <label for="register-password">Create a strong password</label>
                 </div>
-
-                <!-- Simple Captcha -->
-                <div class="captcha-container">
-                    <label class="checkbox-container">
-                        <input type="checkbox" class="captcha-checkbox" required>
-                        <span class="checkmark"></span>
-                        I am not a robot
-                    </label>
-                </div>
-
                 <button type="submit" class="submit-btn">Create Account</button>
                 <p id="register-error" class="error-message"></p>
                 <ul id="password-reqs" class="password-reqs">
