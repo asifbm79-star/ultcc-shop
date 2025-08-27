@@ -699,3 +699,57 @@ body {
 .hidden {
     display: none;
 }
+
+/* Add these new styles to the end of your existing style.css file */
+
+/* --- Results Table Section --- */
+.results-section {
+    background-color: var(--surface-color);
+    border-radius: 12px;
+    margin-top: 30px;
+    padding: 15px;
+}
+
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: var(--text-secondary);
+}
+
+.results-table th, .results-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+    white-space: nowrap;
+}
+
+.results-table th {
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+
+.results-table tbody tr:hover {
+    background-color: var(--background-dark);
+}
+
+.results-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.card-brand {
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    color: #fff;
+}
+
+.card-brand-visa {
+    background-color: #1a1e78;
+}
+
+.card-brand-mastercard {
+    background-color: #eb001b;
+}
