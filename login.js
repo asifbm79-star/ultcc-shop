@@ -9,10 +9,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const registerForm = document.getElementById('register-form');
     const loginError = document.getElementById('login-error');
     const registerError = document.getElementById('register-error');
+
     const showRegisterLink = document.getElementById('show-register');
     const showLoginLink = document.getElementById('show-login');
     const loginContainer = document.getElementById('login-form-container');
     const registerContainer = document.getElementById('register-form-container');
+    
     const passwordInput = document.getElementById('register-password');
     const passwordReqs = {
         length: document.getElementById('req-length'),
@@ -21,6 +23,27 @@ document.addEventListener('DOMContentLoaded', () => {
         number: document.getElementById('req-number'),
         special: document.getElementById('req-special'),
     };
+
+    // --- User Database Management (Using localStorage) ---
+    async function initUserDB() {
+        if (!localStorage.getItem('usersDB')) {
+            try {
+                const response = await fetch('users.json');
+                if (!response.ok) throw new Error('Could not fetch initial user data.');
+                const data = await response.json();
+                localStorage.setItem('usersDB', JSON.stringify(data.users));
+            } catch (error) {
+                console.error("Failed to initialize user database:", error);
+                localStorage.setItem('usersDB', JSON.stringify([]));
+            }
+        }
+    }
+    
+    initUserDB();
+
+    function getUsers() {
+        return JSON.parse(localStorage.getItem('usersDB')) || [];
+    }
 
     // --- Form Switching ---
     showRegisterLink.addEventListener('click', (e) => {
@@ -49,83 +72,57 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         return Object.values(checks).every(Boolean);
     }
+    
     if (passwordInput) {
         passwordInput.addEventListener('input', () => validatePassword(passwordInput.value));
     }
 
     // --- Login Logic ---
-    loginForm.addEventListener('submit', async (e) => {
+    loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const email = document.getElementById('login-email').value;
         const password = document.getElementById('login-password').value;
-        loginError.textContent = 'Checking...';
+        loginError.textContent = '';
 
-        try {
-            const response = await fetch(`${BIN_URL}/latest`, { 
-                headers: { 'X-Master-Key': API_KEY } 
-            });
-            if (!response.ok) throw new Error('Failed to fetch user data.');
-            
-            const data = await response.json();
-            const users = data.record.users || [];
-            const user = users.find(u => u.email === email && u.password === password);
+        const users = getUsers();
+        const user = users.find(u => u.email === email && u.password === password);
 
-            if (user) {
-                sessionStorage.setItem('loggedInUser', email);
-                window.location.href = 'index.html';
-            } else {
-                loginError.textContent = 'Invalid email or password.';
-            }
-        } catch (error) {
-            console.error('Login Error:', error);
-            loginError.textContent = 'Error connecting to the database.';
+        if (user) {
+            sessionStorage.setItem('loggedInUser', email);
+            window.location.href = 'index.html';
+        } else {
+            loginError.textContent = 'Invalid email or password.';
         }
     });
 
     // --- Registration Logic ---
-    registerForm.addEventListener('submit', async (e) => {
+    registerForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const email = document.getElementById('register-email').value;
         const password = document.getElementById('register-password').value;
-        registerError.textContent = 'Processing...';
+        registerError.textContent = '';
 
         if (!validatePassword(password)) {
             registerError.textContent = 'Password does not meet all requirements.';
             return;
         }
 
-        try {
-            const resGet = await fetch(`${BIN_URL}/latest`, { 
-                headers: { 'X-Master-Key': API_KEY } 
-            });
-            if (!resGet.ok) throw new Error('Could not read the database.');
-            
-            const data = await resGet.json();
-            const users = data.record.users || [];
+        const users = getUsers();
 
-            if (users.some(u => u.email === email)) {
-                registerError.textContent = 'An account with this email already exists.';
-                return;
-            }
-
-            users.push({ email, password });
-            
-            const resPut = await fetch(BIN_URL, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Master-Key': API_KEY
-                },
-                body: JSON.stringify({ users: users })
-            });
-            if (!resPut.ok) throw new Error('Could not save new account.');
-
-            // The alert() has been removed. The page will just reload.
-            window.location.reload();
-
-        } catch (error) {
-            console.error('Registration Error:', error);
-            registerError.textContent = 'Failed to create account.';
+        if (users.some(u => u.email === email)) {
+            registerError.textContent = 'An account with this email already exists.';
+            return;
         }
+
+        const newUser = { email, password };
+        users.push(newUser);
+        localStorage.setItem('usersDB', JSON.stringify(users));
+
+        alert(`Account for "${email}" created successfully! You can now log in.`);
+        
+        registerContainer.classList.remove('active');
+        loginContainer.classList.add('active');
+        registerForm.reset();
+        Object.values(passwordReqs).forEach(el => el.classList.remove('valid'));
     });
 });
