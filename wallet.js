@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     // --- Configuration ---
     const API_KEY = '$2a$10$JVm0GDFS81IgTuZTZk.UDemdFi9u03aLpEO1spZB6KK8m3xd9/a3.';
-    const WALLET_BIN_ID = 'P68aedadf43b1c97be92ce2b7'; 
+    const WALLET_BIN_ID = '68aedadf43b1c97be92ce2b7'; 
     const WALLET_BIN_URL = `https://api.jsonbin.io/v3/b/${WALLET_BIN_ID}`;
 
     const loggedInUserEmail = sessionStorage.getItem('loggedInUser');
