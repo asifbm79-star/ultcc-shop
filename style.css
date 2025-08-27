@@ -1025,3 +1025,11 @@ body {
     font-size: 0.9rem;
     opacity: 0.8;
 }
+/* Add this new style to the end of your existing style.css file */
+
+.sold-btn {
+    background-color: #3a3a4a !important;
+    cursor: not-allowed !important;
+    color: var(--text-secondary) !important;
+    border-color: #3a3a4a !important;
+}
