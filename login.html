@@ -12,7 +12,7 @@
 <body class="login-body">
 
     <div class="login-container">
-
+        <!-- Login Form -->
         <div id="login-form-container" class="form-container active">
             <div class="form-header">
                 <h1>Login</h1>
@@ -30,20 +30,13 @@
                     <input type="password" id="login-password" required>
                     <label for="login-password">Enter your password</label>
                 </div>
-                <div class="form-options">
-                    <label class="checkbox-container">
-                        <input type="checkbox" id="remember-me">
-                        <span class="checkmark"></span>
-                        Remember me
-                    </label>
-                    <a href="#" class="forgot-password">Forgot password?</a>
-                </div>
                 <button type="submit" class="submit-btn">Log In</button>
                 <p id="login-error" class="error-message"></p>
             </form>
             <p class="form-switcher">Don't have an account? <a href="#" id="show-register">Register</a></p>
         </div>
 
+        <!-- Registration Form -->
         <div id="register-form-container" class="form-container">
             <div class="form-header">
                 <h1>Register</h1>
@@ -75,11 +68,7 @@
         </div>
     </div>
 
-    <script src="login.js"></script>
-    <!-- Splash Screen -->
-<div id="splash-screen">
-    <div class="splash-logo">ULT<span>CC</span></div>
-</div>
-    <script src="splash.js"></script>
+    <!-- THIS IS THE FIX: Added type="module" -->
+    <script type="module" src="login.js"></script>
 </body>
 </html>

@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 .catch((error) => {
                     // Handle login errors
                     loginError.textContent = 'Invalid email or password.';
-                    console.error("Firebase login error:", error);
+                    console.error("Firebase login error:", error.message);
                 });
         });
     }
@@ -110,7 +110,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             createUserWithEmailAndPassword(auth, email, password)
                 .then(async (userCredential) => {
-                    // Account created in Firebase Auth, now create a wallet in Firestore
                     const userEmail = userCredential.user.email;
                     
                     // Create a new document in the "wallets" collection with the user's email as the ID
@@ -129,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     } else {
                         registerError.textContent = 'Failed to create account. Please try again.';
                     }
-                    console.error("Firebase registration error:", error);
+                    console.error("Firebase registration error:", error.message);
                 });
         });
     }
