@@ -83,12 +83,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             signInWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
-                    // Signed in successfully
                     sessionStorage.setItem('loggedInUser', userCredential.user.email);
                     window.location.href = 'index.html';
                 })
                 .catch((error) => {
-                    // Handle login errors
                     loginError.textContent = 'Invalid email or password.';
                     console.error("Firebase login error:", error.message);
                 });
@@ -111,18 +109,15 @@ document.addEventListener('DOMContentLoaded', () => {
             createUserWithEmailAndPassword(auth, email, password)
                 .then(async (userCredential) => {
                     const userEmail = userCredential.user.email;
-                    
                     // Create a new document in the "wallets" collection with the user's email as the ID
                     await setDoc(doc(db, "wallets", userEmail), {
                         balance: 0,
                         transactions: []
                     });
-
                     alert(`Account for "${userEmail}" created successfully! You can now log in.`);
-                    window.location.reload(); // Reload to switch to the login form
+                    window.location.reload();
                 })
                 .catch((error) => {
-                    // Handle registration errors
                     if (error.code === 'auth/email-already-in-use') {
                         registerError.textContent = 'An account with this email already exists.';
                     } else {
