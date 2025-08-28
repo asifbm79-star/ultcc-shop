@@ -6,6 +6,7 @@ const fetch = require("node-fetch");
 
 // Initialize the Firebase Admin SDK, which gives the server access to your database
 admin.initializeApp();
+console.log("Initializing functions with latest keys...");
 
 // --- Function 1: createDepositRequest ---
 // This is triggered by your website when a user clicks "Create" on the deposit modal.
