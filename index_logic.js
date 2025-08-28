@@ -1,6 +1,6 @@
 // Import the functions you need from the Firebase SDKs
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
 import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-functions.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
 
@@ -155,28 +155,31 @@ document.addEventListener('DOMContentLoaded', () => {
             const button = e.target;
             const docId = button.getAttribute('data-doc-id');
             const cardData = allPreorderCards.find(c => c.id === docId);
-            if (!cardData) return;
+            const currentUser = auth.currentUser;
+
+            if (!cardData || !currentUser) {
+                alert("Authentication error. Please refresh and try again.");
+                return;
+            }
 
             button.disabled = true;
             button.textContent = 'Booking...';
 
             try {
-                const processPreOrder = httpsCallable(functions, 'processPreOrder');
-                const result = await processPreOrder({ card: cardData });
-                if (result.data.success) {
-                    alert(`Pre-order successful! Order ID: ${result.data.orderId}. Check "My Orders".`);
-                    button.textContent = 'Booked';
-                    button.classList.remove('preorder-btn');
-                    button.classList.add('sold-btn');
-                }
+                await addDoc(collection(db, "pre_orders"), {
+                    userEmail: currentUser.email,
+                    orderId: `ULT-PRE-${Date.now()}`,
+                    date: new Date().toISOString().split('T')[0],
+                    total: cardData.price,
+                    status: "Pending Payment",
+                    items: [cardData]
+                });
+                alert('Pre-order booked! Please check "My Orders" to complete your payment.');
+                button.textContent = 'Booked!';
+                button.classList.add('sold-btn');
             } catch (error) {
                 console.error("Pre-order Error:", error);
-                if (error.message.includes("Insufficient balance")) {
-                    alert("Pre-order failed: Insufficient balance.");
-                    setTimeout(() => { window.location.href = 'wallet.html'; }, 1000);
-                } else {
-                    alert(`Pre-order failed: ${error.message}`);
-                }
+                alert(`Pre-order failed: ${error.message}`);
                 button.disabled = false;
                 button.textContent = 'Pre-Order';
             }
@@ -190,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const option = document.createElement('option');
             option.value = country;
             option.textContent = country;
-            countrySelect.appendChild(option);
+            if (countrySelect) countrySelect.appendChild(option);
         });
     }
 
@@ -221,9 +224,19 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // --- Friday Crate Logic ---
     function handleFridayCrate() {
-        // ... (This function remains the same)
+        if (!preorderBtn) return;
+        const isFriday = new Date().getDay() === 5; // Simple check, not timezone specific
+        if (isFriday) {
+            preorderBtn.disabled = false;
+            preorderBtn.textContent = 'Pre-Order Now';
+            crateTimerEl.textContent = 'Available today only!';
+        } else {
+            preorderBtn.disabled = true;
+            preorderBtn.textContent = 'Available on Friday';
+            crateTimerEl.textContent = 'Check back soon for this exclusive offer.';
+        }
     }
     
-    // Initial population of dropdowns
+    // --- Initial Load ---
     populateCountries();
 });

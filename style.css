@@ -1087,3 +1087,8 @@ body {
     background-color: rgba(108, 92, 231, 0.1);
     color: var(--primary-violet);
 }
+
+.status-pending-payment {
+    background-color: rgba(255, 165, 0, 0.1);
+    color: #ffa500; /* Orange */
+}

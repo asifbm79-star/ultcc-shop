@@ -20,22 +20,32 @@ document.addEventListener('DOMContentLoaded', () => {
     const loggedInUserEmail = sessionStorage.getItem('loggedInUser');
     const ordersTableBody = document.querySelector('#orders-table tbody');
 
-    // --- Main Function to Load Order Data from Firestore ---
-    async function loadOrders() {
-        if (!loggedInUserEmail || !ordersTableBody) return;
+    // --- Main Function to Load All Order Data from Firestore ---
+    async function loadAllOrders() {
+        if (!loggedInUserEmail || !ordersTableBody) {
+            // This check prevents errors if the script runs on a page without the necessary elements
+            return;
+        }
+        ordersTableBody.innerHTML = `<tr><td colspan="5">Loading your orders...</td></tr>`;
 
         try {
-            // 1. Reference the 'orders' collection
+            // 1. Fetch regular completed orders from the 'orders' collection
             const ordersRef = collection(db, "orders");
-            // 2. Create a query to get only the orders for the currently logged-in user
-            const q = query(ordersRef, where("userEmail", "==", loggedInUserEmail));
+            const qOrders = query(ordersRef, where("userEmail", "==", loggedInUserEmail));
+            const ordersSnapshot = await getDocs(qOrders);
+            const regularOrders = ordersSnapshot.docs.map(doc => doc.data());
+
+            // 2. Fetch pending pre-orders from the 'pre_orders' collection
+            const preOrdersRef = collection(db, "pre_orders");
+            const qPreOrders = query(preOrdersRef, where("userEmail", "==", loggedInUserEmail));
+            const preOrdersSnapshot = await getDocs(qPreOrders);
+            const preOrders = preOrdersSnapshot.docs.map(doc => doc.data());
+
+            // 3. Combine both lists into a single array
+            const allUserOrders = [...regularOrders, ...preOrders];
             
-            // 3. Execute the query
-            const querySnapshot = await getDocs(q);
-            const userOrders = querySnapshot.docs.map(doc => doc.data());
-            
-            // 4. Update the UI with the user's orders
-            updateOrdersTable(userOrders);
+            // 4. Update the UI with the combined list of orders
+            updateOrdersTable(allUserOrders);
 
         } catch (error) {
             console.error("Order Load Error:", error);
@@ -45,17 +55,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Function to Update the Orders Table UI ---
     function updateOrdersTable(orders) {
-        ordersTableBody.innerHTML = ''; // Clear existing rows
+        ordersTableBody.innerHTML = ''; // Clear the "Loading..." message
         if (orders.length === 0) {
             ordersTableBody.innerHTML = `<tr><td colspan="5">You have not placed any orders yet.</td></tr>`;
             return;
         }
 
-        // Sort orders by date, newest first
+        // Sort all orders by date, so the newest ones appear first
         orders.sort((a, b) => new Date(b.date) - new Date(a.date));
 
         orders.forEach(order => {
-            const statusClass = order.status.toLowerCase().replace(' ', '-'); // e.g., "pre-ordered"
+            const statusClass = order.status.toLowerCase().replace(/\s+/g, '-'); // e.g., "pending-payment"
             const row = `
                 <tr>
                     <td>${order.orderId}</td>
@@ -69,16 +79,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Function to show order details (now uses the order object directly) ---
-    ordersTableBody.addEventListener('click', async (e) => {
+    // --- Function to show order details (simulated) ---
+    ordersTableBody.addEventListener('click', (e) => {
         if (e.target.matches('button[data-order-id]')) {
             const orderId = e.target.getAttribute('data-order-id');
-            // This is a simplified approach. A full implementation would re-fetch the specific order.
-            // For this project, we can just show a generic message.
+            // A full implementation would fetch the specific order details again
+            // and show them in a modal. For this project, an alert is sufficient.
             alert(`Viewing details for Order ID: ${orderId}\n\nFull item details would be displayed here.`);
         }
     });
 
     // --- Initial Load ---
-    loadOrders();
+    loadAllOrders();
 });
