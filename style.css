@@ -1092,3 +1092,28 @@ body {
     background-color: rgba(255, 165, 0, 0.1);
     color: #ffa500; /* Orange */
 }
+/* Add these new styles to the end of your existing style.css file */
+
+.info-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--primary-violet);
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 30px;
+}
+
+.info-box svg {
+    flex-shrink: 0;
+    stroke: var(--primary-violet);
+    margin-top: 2px;
+}
+
+.info-box p {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
