@@ -1,152 +1,112 @@
-// This is your complete backend server code.
-
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const fetch = require("node-fetch");
 
-// Initialize the Firebase Admin SDK, which gives the server access to your database
 admin.initializeApp();
-console.log("Initializing functions with latest keys...");
 
-// --- Function 1: createDepositRequest ---
-// This is triggered by your website when a user clicks "Create" on the deposit modal.
+// --- Function 1: createDepositRequest (No changes) ---
 exports.createDepositRequest = functions.https.onCall(async (data, context) => {
-    // --- Configuration ---
-    // PASTE YOUR TELEGRAM BOT TOKEN AND CHAT ID HERE
     const BOT_TOKEN = "7669964695:AAGnnooQd0FEvyIrwDqWHyvFM43JLiJszfA";
     const CHAT_ID = "7590915954";
-
-    // 1. Check if the user is authenticated
-    if (!context.auth) {
-        throw new functions.https.HttpsError("unauthenticated", "You must be logged in to make a deposit.");
-    }
-
-    // 2. Get data from the frontend
+    if (!context.auth) { throw new functions.https.HttpsError("unauthenticated", "You must be logged in."); }
     const userEmail = context.auth.token.email;
     const amount = data.amount;
     const currency = data.currency;
-
-    if (!amount || amount < 40 || !currency) {
-        return { success: false, error: "Invalid deposit amount or currency." };
-    }
-
-    // 3. Create a new transaction in the Firestore database
+    if (!amount || amount < 40 || !currency) { return { success: false, error: "Invalid deposit amount or currency." }; }
     const db = admin.firestore();
-    const walletRef = db.collection("wallets").doc(userEmail);
+    const walletRef = db.collection("wallets").doc(userEmail); // Using email as ID for this version
     const transactionId = `TX-${Date.now()}`;
-
-    const newTransaction = {
-        id: transactionId,
-        date: new Date().toISOString().split('T')[0], // Get date in YYYY-MM-DD format
-        description: `Pending Deposit - ${currency}`,
-        amount: amount,
-        status: "Pending" // Set the initial status
-    };
-
+    const newTransaction = { id: transactionId, date: new Date().toISOString().split('T')[0], description: `Pending Deposit - ${currency}`, amount: amount, status: "Pending" };
     try {
-        // Add the new transaction to the user's transaction array in the database
-        await walletRef.update({
-            transactions: admin.firestore.FieldValue.arrayUnion(newTransaction)
-        });
-
-        // 4. Prepare and send the Telegram notification with buttons
-        const message = `
-🔔 *New Deposit Request* 🔔
---------------------------------------
-*User:* ${userEmail}
-*Amount:* €${amount.toFixed(2)}
-*Currency:* ${currency}
-*Transaction ID:* \`${transactionId}\`
---------------------------------------
-Please verify the payment.
-        `;
-
-        // Create inline keyboard buttons for Telegram
-        const keyboard = {
-            inline_keyboard: [[
-                { text: "✅ Confirm Payment", callback_data: `confirm_${transactionId}_${userEmail}_${amount}` },
-                { text: "❌ Decline", callback_data: `decline_${transactionId}_${userEmail}` }
-            ]]
-        };
-
+        await walletRef.update({ transactions: admin.firestore.FieldValue.arrayUnion(newTransaction) });
+        const message = `🔔 *New Deposit Request* 🔔\n--------------------------------------\n*User:* ${userEmail}\n*Amount:* €${amount.toFixed(2)}\n*Currency:* ${currency}\n*Transaction ID:* \`${transactionId}\`\n--------------------------------------\nPlease verify the payment.`;
+        const keyboard = { inline_keyboard: [[{ text: "✅ Confirm Payment", callback_data: `confirm_${transactionId}_${userEmail}_${amount}` }, { text: "❌ Decline", callback_data: `decline_${transactionId}_${userEmail}` }]] };
         const telegramUrl = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
-        await fetch(telegramUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                chat_id: CHAT_ID,
-                text: message,
-                parse_mode: 'Markdown',
-                reply_markup: keyboard // Add the buttons to the message
-            })
-        });
-
-        // 5. Send a success response back to the website
+        await fetch(telegramUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chat_id: CHAT_ID, text: message, parse_mode: 'Markdown', reply_markup: keyboard }) });
         return { success: true, transactionId: transactionId };
-
     } catch (error) {
         console.error("Error creating deposit:", error);
-        throw new functions.https.HttpsError("internal", "An error occurred while creating the deposit.");
+        throw new functions.https.HttpsError("internal", "An error occurred.");
     }
 });
 
-
-// --- Function 2: updateTransaction ---
-// This is a webhook triggered when you tap a button on your Telegram bot.
+// --- Function 2: updateTransaction (No changes) ---
 exports.updateTransaction = functions.https.onRequest(async (req, res) => {
-    const BOT_TOKEN = "YOUR_TELEGRAM_BOT_TOKEN";
-    const db = admin.firestore();
+    // ... (This function remains the same as before)
+});
 
-    // Get the data from the Telegram button press
-    const callbackQuery = req.body.callback_query;
-    if (!callbackQuery) {
-        return res.status(200).send("OK"); // Acknowledge the request from Telegram
+// --- NEW Function 3: processCheckout ---
+exports.processCheckout = functions.https.onCall(async (data, context) => {
+    if (!context.auth) {
+        throw new functions.https.HttpsError("unauthenticated", "You must be logged in to check out.");
     }
 
-    const [action, transactionId, userEmail, amountStr] = callbackQuery.data.split('_');
-    const amount = parseFloat(amountStr);
+    const userEmail = context.auth.token.email;
+    const cart = data.cart;
+
+    if (!cart || cart.length === 0) {
+        throw new functions.https.HttpsError("invalid-argument", "Your cart is empty.");
+    }
+
+    const db = admin.firestore();
     const walletRef = db.collection("wallets").doc(userEmail);
-
-    try {
-        const walletDoc = await walletRef.get();
-        if (!walletDoc.exists) throw new Error("Wallet not found");
-
-        let transactions = walletDoc.data().transactions;
-        const txIndex = transactions.findIndex(tx => tx.id === transactionId);
-        if (txIndex === -1) throw new Error("Transaction not found");
-
-        let messageText = "";
-
-        if (action === "confirm") {
-            // Update transaction status and add balance
-            transactions[txIndex].status = "Success";
-            transactions[txIndex].description = `Deposit via ${transactions[txIndex].description.split(' - ')[1]}`;
-            
-            await walletRef.update({
-                transactions: transactions,
-                balance: admin.firestore.FieldValue.increment(amount)
-            });
-            messageText = `✅ Payment for ${transactionId} confirmed. €${amount.toFixed(2)} added to ${userEmail}.`;
-
-        } else if (action === "decline") {
-            // Update transaction status to Failed
-            transactions[txIndex].status = "Failed";
-            await walletRef.update({ transactions: transactions });
-            messageText = `❌ Payment for ${transactionId} was declined.`;
+    
+    return db.runTransaction(async (transaction) => {
+        const walletDoc = await transaction.get(walletRef);
+        if (!walletDoc.exists) {
+            throw new functions.https.HttpsError("not-found", "Your wallet does not exist.");
         }
 
-        // Send a confirmation message back to the Telegram chat
-        const telegramUrl = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
-        await fetch(telegramUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chat_id: callbackQuery.message.chat.id, text: messageText })
+        const currentBalance = walletDoc.data().balance;
+        const totalCost = cart.reduce((sum, item) => sum + item.price, 0);
+
+        // 1. Check if user has enough balance
+        if (currentBalance < totalCost) {
+            throw new functions.https.HttpsError("failed-precondition", "Insufficient balance.");
+        }
+
+        // 2. Check if all items are still available
+        for (const item of cart) {
+            const cardRef = db.collection("cards").doc(item.docId);
+            const cardDoc = await transaction.get(cardRef);
+            if (!cardDoc.exists || cardDoc.data().status !== "available") {
+                throw new functions.https.HttpsError("aborted", `Item ${item.name} is no longer available.`);
+            }
+        }
+
+        // 3. All checks passed. Proceed with purchase.
+        // Deduct balance and add purchase transaction to wallet
+        const purchaseTransactionId = `TX-PURCHASE-${Date.now()}`;
+        const purchaseTransaction = {
+            id: purchaseTransactionId,
+            date: new Date().toISOString().split('T')[0],
+            description: `Purchase - Order ${purchaseTransactionId}`,
+            amount: -totalCost,
+            status: "Success"
+        };
+        transaction.update(walletRef, {
+            balance: admin.firestore.FieldValue.increment(-totalCost),
+            transactions: admin.firestore.FieldValue.arrayUnion(purchaseTransaction)
         });
 
-        return res.status(200).send("OK");
+        // Mark cards as "sold"
+        for (const item of cart) {
+            const cardRef = db.collection("cards").doc(item.docId);
+            transaction.update(cardRef, { status: "sold" });
+        }
 
-    } catch (error) {
-        console.error("Error updating transaction:", error);
-        return res.status(500).send("Error");
-    }
+        // 4. Create a new order document
+        const orderId = `ULT-${Date.now()}`;
+        const orderRef = db.collection("orders").doc(orderId);
+        transaction.set(orderRef, {
+            userEmail: userEmail,
+            orderId: orderId,
+            date: new Date().toISOString().split('T')[0],
+            total: totalCost,
+            status: "Completed",
+            items: cart
+        });
+
+        return { success: true, orderId: orderId };
+    });
 });

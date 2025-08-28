@@ -1,0 +1,11 @@
+[
+  { "bin": "416538", "brand": "VISA", "level": "CLASSIC", "type": "DEBIT", "expire": "11/28", "address": { "city": "Petit Quevilly", "state": "Petit Quevilly", "zip": "76140", "country": "FR" }, "price": 2.00, "status": "available" },
+  { "bin": "416538", "brand": "VISA", "level": "CLASSIC", "type": "DEBIT", "expire": "05/29", "address": { "city": "Montpellier", "state": "Montpellier", "zip": "34090", "country": "FR" }, "price": 2.00, "status": "available" },
+  { "bin": "416538", "brand": "VISA", "level": "CLASSIC", "type": "DEBIT", "expire": "06/25", "address": { "city": "Saint julien de chedon", "state": "N/A", "zip": "4100", "country": "FR" }, "price": 1.00, "status": "available" },
+  { "bin": "513028", "brand": "MASTERCARD", "level": "STANDARD", "type": "CREDIT", "expire": "08/25", "address": { "city": "Champniers", "state": "Champniers", "zip": "16430", "country": "FR" }, "price": 1.00, "status": "available" },
+  { "bin": "497291", "brand": "VISA", "level": "CLASSIC", "type": "CREDIT", "expire": "01/28", "address": { "city": "Avranches", "state": "Avranches", "zip": "50300", "country": "FR" }, "price": 2.00, "status": "available" },
+  { "bin": "513028", "brand": "MASTERCARD", "level": "STANDARD", "type": "CREDIT", "expire": "07/25", "address": { "city": "Telgruc-sur-Mer", "state": "FR", "zip": "29560", "country": "FR" }, "price": 1.00, "status": "available" },
+  { "bin": "497291", "brand": "VISA", "level": "CLASSIC", "type": "CREDIT", "expire": "09/26", "address": { "city": "SAINT BREVIN LES PINS", "state": "SAINT BREVIN LES PINS", "zip": "44250", "country": "FR" }, "price": 2.00, "status": "available" },
+  { "bin": "453304", "brand": "VISA", "level": "CLASSIC", "type": "DEBIT", "expire": "11/28", "address": { "city": "NAVES", "state": "NAVES", "zip": "19460", "country": "FR" }, "price": 1.50, "status": "available" },
+  { "bin": "497874", "brand": "VISA", "level": "CLASSIC", "type": "DEBIT", "expire": "09/25", "address": { "city": "Cléder", "state": "Cléder", "zip": "29233", "country": "FR" }, "price": 1.50, "status": "available" }
+]
