@@ -53,7 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const walletRef = doc(db, "wallets", loggedInUserEmail);
         
-        // onSnapshot listens for real-time updates to the wallet document
         onSnapshot(walletRef, (doc) => {
             if (doc.exists()) {
                 updateUI(doc.data());
@@ -146,11 +145,9 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         
-        // This function name 'createDepositRequest' is what you will create in the backend
         const createDeposit = httpsCallable(functions, 'createDepositRequest');
         
         try {
-            // Show a loading state to the user
             const submitBtn = depositForm.querySelector('.submit-btn');
             submitBtn.disabled = true;
             submitBtn.textContent = 'Creating...';
@@ -166,7 +163,6 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error("Error calling Firebase Function:", error);
             alert('Could not create deposit request. The backend function may not be deployed yet.');
         } finally {
-            // Restore button state
             const submitBtn = depositForm.querySelector('.submit-btn');
             submitBtn.disabled = false;
             submitBtn.textContent = 'Create';

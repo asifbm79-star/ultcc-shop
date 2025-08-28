@@ -10,7 +10,12 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Splash Screen -->
+    <div id="splash-screen">
+        <div class="splash-logo">ULT<span>CC</span></div>
+    </div>
 
+    <!-- Sidebar Navigation -->
     <div class="overlay" id="overlay"></div>
     <nav class="sidebar" id="sidebar">
         <div class="sidebar-header">
@@ -48,6 +53,7 @@
     </nav>
 
     <div class="container">
+        <!-- Header -->
         <header class="header">
             <a href="index.html" class="logo-link">
                 <div class="logo">ULT<span>CC</span></div>
@@ -58,6 +64,7 @@
             <div class="header-right"></div>
         </header>
 
+        <!-- Main Content Area -->
         <main>
             <section class="content-page">
                 <div class="wallet-header">
@@ -91,8 +98,10 @@
         </main>
     </div>
 
+    <!-- Deposit Modal Container -->
     <div id="deposit-modal-overlay" class="modal-overlay">
         <div class="modal-flipper">
+            <!-- Front of Card: Deposit Form -->
             <div id="deposit-modal" class="modal-content">
                 <div class="modal-header">
                     <h2>Create Deposit</h2>
@@ -119,6 +128,7 @@
                 </form>
             </div>
 
+            <!-- Back of Card: Payment Details -->
             <div id="payment-details-modal" class="modal-content">
                 <div class="modal-header">
                     <h2>Complete Your Deposit</h2>
@@ -144,11 +154,8 @@
     </div>
 
     <script src="script.js"></script>
-    <script src="wallet.js"></script>
-    <!-- Splash Screen -->
-<div id="splash-screen">
-    <div class="splash-logo">ULT<span>CC</span></div>
-</div>
-<script src="splash.js"></script>
+    <!-- The crucial fix: adding type="module" -->
+    <script type="module" src="wallet.js"></script>
+    <script src="splash.js"></script>
 </body>
 </html>
