@@ -1,9 +1,24 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // --- Configuration ---
-    const API_KEY = '$2a$10$JVm0GDFS81IgTuZTZk.UDemdFi9u03aLpEO1spZB6KK8m3xd9/a3.';
-    const WALLET_BIN_ID = '68aedadf43b1c97be92ce2b7'; 
-    const WALLET_BIN_URL = `https://api.jsonbin.io/v3/b/${WALLET_BIN_ID}`;
+// Import the functions you need from the Firebase SDKs
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-functions.js";
 
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyBS5WvBZgg1Cr0iyFvMj7ciJl4_kxkOIt0",
+  authDomain: "ultcc-shop-project.firebaseapp.com",
+  projectId: "ultcc-shop-project",
+  storageBucket: "ultcc-shop-project.appspot.com",
+  messagingSenderId: "670031756880",
+  appId: "1:670031756880:web:43e14f3f9c12ae8e2b1b55"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const functions = getFunctions(app);
+
+document.addEventListener('DOMContentLoaded', () => {
     const loggedInUserEmail = sessionStorage.getItem('loggedInUser');
     let depositTimer;
 
@@ -32,36 +47,36 @@ document.addEventListener('DOMContentLoaded', () => {
         XMR: '44AFFq5kSiGBoZ4NMDwYtN18obc8A5S3jSHytLwsVLhG8i3QF8gBZH46'
     };
 
-    // --- Main Function to Load Wallet Data ---
-    async function loadWalletData() {
+    // --- Main Function to Load Wallet Data (Real-time from Firestore) ---
+    function loadWalletData() {
         if (!loggedInUserEmail) return;
-        try {
-            const response = await fetch(`${WALLET_BIN_URL}/latest`, { headers: { 'X-Master-Key': API_KEY } });
-            if (!response.ok) throw new Error('Failed to fetch wallet data.');
-            const data = await response.json();
-            const allWallets = data.record.wallets || [];
-            let userWallet = allWallets.find(w => w.email === loggedInUserEmail);
-            if (!userWallet) {
-                userWallet = { email: loggedInUserEmail, balance: 0, transactions: [] };
+
+        const walletRef = doc(db, "wallets", loggedInUserEmail);
+        
+        // onSnapshot listens for real-time updates to the wallet document
+        onSnapshot(walletRef, (doc) => {
+            if (doc.exists()) {
+                updateUI(doc.data());
+            } else {
+                console.log("No wallet found for user! This should not happen if registration is correct.");
+                updateUI({ balance: 0, transactions: [] });
             }
-            updateUI(userWallet);
-        } catch (error) {
+        }, (error) => {
             console.error("Wallet Load Error:", error);
             balanceAmountEl.textContent = 'Error';
             transactionsTableBody.innerHTML = `<tr><td colspan="4">Could not load transaction history.</td></tr>`;
-        }
+        });
     }
 
     // --- Function to Update the UI ---
     function updateUI(wallet) {
         balanceAmountEl.textContent = `€ ${wallet.balance.toFixed(2)}`;
         transactionsTableBody.innerHTML = '';
-        if (wallet.transactions.length === 0) {
+        if (!wallet.transactions || wallet.transactions.length === 0) {
             transactionsTableBody.innerHTML = `<tr><td colspan="4">No transactions found.</td></tr>`;
         } else {
             wallet.transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
             wallet.transactions.forEach(tx => {
-                // Simplified logic: positive amount is credit, negative is debit
                 const amountClass = tx.amount >= 0 ? 'amount-credit' : 'amount-debit';
                 const row = `
                     <tr>
@@ -121,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- Deposit Form Submission ---
-    depositForm.addEventListener('submit', (e) => {
+    depositForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const amount = parseFloat(document.getElementById('deposit-amount').value);
         const currency = document.getElementById('crypto-select').value;
@@ -131,7 +146,31 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         
-        showPaymentDetails(currency, amount);
+        // This function name 'createDepositRequest' is what you will create in the backend
+        const createDeposit = httpsCallable(functions, 'createDepositRequest');
+        
+        try {
+            // Show a loading state to the user
+            const submitBtn = depositForm.querySelector('.submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Creating...';
+
+            const result = await createDeposit({ amount: amount, currency: currency });
+
+            if (result.data.success) {
+                showPaymentDetails(currency, amount);
+            } else {
+                alert('Error: ' + result.data.error);
+            }
+        } catch (error) {
+            console.error("Error calling Firebase Function:", error);
+            alert('Could not create deposit request. The backend function may not be deployed yet.');
+        } finally {
+            // Restore button state
+            const submitBtn = depositForm.querySelector('.submit-btn');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Create';
+        }
     });
 
     // --- Show Payment Details Logic ---

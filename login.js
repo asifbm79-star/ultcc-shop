@@ -1,9 +1,24 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // --- Configuration ---
-    const API_KEY = '$2a$10$JVm0GDFS81IgTuZTZk.UDemdFi9u03aLpEO1spZB6KK8m3xd9/a3.'; 
-    const BIN_ID = '68aece44ae596e708fd88790'; 
-    const BIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+// Import the functions you need from the Firebase SDKs
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
 
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyBS5WvBZgg1Cr0iyFvMj7ciJl4_kxkOIt0",
+  authDomain: "ultcc-shop-project.firebaseapp.com",
+  projectId: "ultcc-shop-project",
+  storageBucket: "ultcc-shop-project.appspot.com",
+  messagingSenderId: "670031756880",
+  appId: "1:670031756880:web:43e14f3f9c12ae8e2b1b55"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+document.addEventListener('DOMContentLoaded', () => {
     // --- Element References ---
     const loginForm = document.getElementById('login-form');
     const registerForm = document.getElementById('register-form');
@@ -23,17 +38,20 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // --- Form Switching ---
-    showRegisterLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        loginContainer.classList.remove('active');
-        registerContainer.classList.add('active');
-    });
-
-    showLoginLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        registerContainer.classList.remove('active');
-        loginContainer.classList.add('active');
-    });
+    if (showRegisterLink) {
+        showRegisterLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            loginContainer.classList.remove('active');
+            registerContainer.classList.add('active');
+        });
+    }
+    if (showLoginLink) {
+        showLoginLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            registerContainer.classList.remove('active');
+            loginContainer.classList.add('active');
+        });
+    }
 
     // --- Password Strength Checker ---
     function validatePassword(password) {
@@ -45,7 +63,9 @@ document.addEventListener('DOMContentLoaded', () => {
             special: /[!@#$%]/.test(password),
         };
         Object.keys(checks).forEach(key => {
-            passwordReqs[key].classList.toggle('valid', checks[key]);
+            if (passwordReqs[key]) {
+                passwordReqs[key].classList.toggle('valid', checks[key]);
+            }
         });
         return Object.values(checks).every(Boolean);
     }
@@ -53,79 +73,64 @@ document.addEventListener('DOMContentLoaded', () => {
         passwordInput.addEventListener('input', () => validatePassword(passwordInput.value));
     }
 
-    // --- Login Logic ---
-    loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('login-email').value;
-        const password = document.getElementById('login-password').value;
-        loginError.textContent = 'Checking...';
+    // --- Login Logic using Firebase Auth ---
+    if (loginForm) {
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            loginError.textContent = 'Checking...';
 
-        try {
-            const response = await fetch(`${BIN_URL}/latest`, { 
-                headers: { 'X-Master-Key': API_KEY } 
-            });
-            if (!response.ok) throw new Error('Failed to fetch user data.');
-            
-            const data = await response.json();
-            const users = data.record.users || [];
-            const user = users.find(u => u.email === email && u.password === password);
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    // Signed in successfully
+                    sessionStorage.setItem('loggedInUser', userCredential.user.email);
+                    window.location.href = 'index.html';
+                })
+                .catch((error) => {
+                    // Handle login errors
+                    loginError.textContent = 'Invalid email or password.';
+                    console.error("Firebase login error:", error);
+                });
+        });
+    }
 
-            if (user) {
-                sessionStorage.setItem('loggedInUser', email);
-                window.location.href = 'index.html';
-            } else {
-                loginError.textContent = 'Invalid email or password.';
-            }
-        } catch (error) {
-            console.error('Login Error:', error);
-            loginError.textContent = 'Error connecting to the database.';
-        }
-    });
+    // --- Registration Logic using Firebase Auth ---
+    if (registerForm) {
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            registerError.textContent = 'Processing...';
 
-    // --- Registration Logic ---
-    registerForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('register-email').value;
-        const password = document.getElementById('register-password').value;
-        registerError.textContent = 'Processing...';
-
-        if (!validatePassword(password)) {
-            registerError.textContent = 'Password does not meet all requirements.';
-            return;
-        }
-
-        try {
-            const resGet = await fetch(`${BIN_URL}/latest`, { 
-                headers: { 'X-Master-Key': API_KEY } 
-            });
-            if (!resGet.ok) throw new Error('Could not read the database.');
-            
-            const data = await resGet.json();
-            const users = data.record.users || [];
-
-            if (users.some(u => u.email === email)) {
-                registerError.textContent = 'An account with this email already exists.';
+            if (!validatePassword(password)) {
+                registerError.textContent = 'Password does not meet all requirements.';
                 return;
             }
 
-            users.push({ email, password });
-            
-            const resPut = await fetch(BIN_URL, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Master-Key': API_KEY
-                },
-                body: JSON.stringify({ users: users })
-            });
-            if (!resPut.ok) throw new Error('Could not save new account.');
+            createUserWithEmailAndPassword(auth, email, password)
+                .then(async (userCredential) => {
+                    // Account created in Firebase Auth, now create a wallet in Firestore
+                    const userEmail = userCredential.user.email;
+                    
+                    // Create a new document in the "wallets" collection with the user's email as the ID
+                    await setDoc(doc(db, "wallets", userEmail), {
+                        balance: 0,
+                        transactions: []
+                    });
 
-            // The alert() has been removed. The page will just reload.
-            window.location.reload();
-
-        } catch (error) {
-            console.error('Registration Error:', error);
-            registerError.textContent = 'Failed to create account.';
-        }
-    });
+                    alert(`Account for "${userEmail}" created successfully! You can now log in.`);
+                    window.location.reload(); // Reload to switch to the login form
+                })
+                .catch((error) => {
+                    // Handle registration errors
+                    if (error.code === 'auth/email-already-in-use') {
+                        registerError.textContent = 'An account with this email already exists.';
+                    } else {
+                        registerError.textContent = 'Failed to create account. Please try again.';
+                    }
+                    console.error("Firebase registration error:", error);
+                });
+        });
+    }
 });
