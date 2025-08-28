@@ -55,12 +55,41 @@
     <div class="container">
         <!-- Header -->
         <header class="header">
-            <a href="index.html" class="logo-link">
-                <div class="logo">ULT<span>CC</span></div>
-            </a>
             <button class="hamburger-menu" id="hamburger-btn" aria-label="Open menu">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
             </button>
+
+            <!-- Notification Bell and Panel -->
+            <div class="notification-container">
+                <button id="notification-btn" class="notification-btn" aria-label="View notifications">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                    <span class="notification-dot"></span>
+                </button>
+                <div id="notification-panel" class="notification-panel">
+                    <div class="notification-header"><h3>Updates & News</h3></div>
+                    <div class="notification-body">
+                        <div class="notification-item">
+                            <p class="item-title">System Maintenance Complete</p>
+                            <p class="item-body">All services are back online after a scheduled upgrade. Performance has been improved by 15%.</p>
+                            <p class="item-date">August 27, 2025</p>
+                        </div>
+                        <div class="notification-item">
+                            <p class="item-title">New Batch of German Cards Added</p>
+                            <p class="item-body">A fresh batch of high-quality DE cards from Deutsche Bank and Commerzbank is now available.</p>
+                            <p class="item-date">August 26, 2025</p>
+                        </div>
+                        <div class="notification-item">
+                            <p class="item-title">Wallet Top-Up Bonus</p>
+                            <p class="item-body">For a limited time, get a 5% bonus on all crypto deposits over €100.</p>
+                            <p class="item-date">August 25, 2025</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <a href="index.html" class="logo-link">
+                <div class="logo">ULT<span>CC</span></div>
+            </a>
             <div class="header-right"></div>
         </header>
 
@@ -81,41 +110,17 @@
                 </div>
             </section>
             
-            <section class="results-section">
-    <h2>Pre-Order Next Week's Stock</h2>
-    <div class="table-wrapper">
-        <table class="results-table">
-            <thead>
-                <tr>
-                    <th>Bin</th>
-                    <th>Brand</th>
-                    <th>Level</th>
-                    <th>Type</th>
-                    <th>Expire</th>
-                    <th>Address Details</th>
-                    <th>Price</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody id="preorder-results-tbody">
-                <!-- Pre-order cards will be loaded here -->
-            </tbody>
-        </table>
-    </div>
-</section>
-
-            
             <section class="search-section">
                 <h2>Search</h2>
                 <form class="search-grid">
-                    <div class="form-group"><label for="bin-search">Bins</label><input type="text" id="bin-search" placeholder="e.g., 453903, 542418, 492903..."></div>
+                    <div class="form-group"><label for="bin-search">Bins</label><input type="text" id="bin-search" placeholder="e.g., 453903, 542418..."></div>
                     <div class="form-group"><label for="country-select">Country</label><select id="country-select"><option value="">All</option></select></div>
                     <div class="form-group"><label for="bank-select">Bank</label><select id="bank-select"><option value="">All</option></select></div>
                     <div class="form-group"><label for="zip-select">Zip Codes</label><select id="zip-select"><option value="">All</option></select></div>
                 </form>
             </section>
 
-            <!-- Results Section -->
+            <!-- Main Results Section -->
             <section class="results-section">
                 <div class="table-wrapper">
                     <table class="results-table">
@@ -137,11 +142,50 @@
                     </table>
                 </div>
             </section>
+
+            <!-- Pre-Order Section -->
+            <section class="results-section">
+                <h2>Pre-Order Next Week's Stock</h2>
+                <div class="table-wrapper">
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th>Bin</th>
+                                <th>Brand</th>
+                                <th>Level</th>
+                                <th>Type</th>
+                                <th>Expire</th>
+                                <th>Address Details</th>
+                                <th>Price</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="preorder-results-tbody">
+                             <tr><td colspan="8" style="text-align: center;">Loading pre-orders...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Friday Crate Section -->
+            <section id="friday-crate-section" class="friday-crate-section">
+                <h2>Only Friday Crate</h2>
+                <div class="crate-content">
+                    <div class="crate-details">
+                        <h3>The Week's Best Selection</h3>
+                        <p>Get a curated crate of 10 high-quality, premium cards from top-tier banks. Available for pre-order every Friday!</p>
+                        <span class="crate-price">€65.00</span>
+                    </div>
+                    <div class="crate-action">
+                        <button id="preorder-btn" class="action-button"></button>
+                        <p id="crate-timer" class="crate-timer"></p>
+                    </div>
+                </div>
+            </section>
         </main>
     </div>
 
     <script src="script.js"></script>
-    <!-- The crucial fix: adding type="module" -->
     <script type="module" src="index_logic.js"></script>
     <script src="splash.js"></script>
 </body>
