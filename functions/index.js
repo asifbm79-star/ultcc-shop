@@ -4,18 +4,23 @@ const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const fetch = require("node-fetch");
 
+// Initialize the Firebase Admin SDK, which gives the server access to your database
 admin.initializeApp();
 
 // --- Function 1: createDepositRequest ---
-// This is triggered by your website to start a deposit.
+// This is triggered by your website when a user clicks "Create" on the deposit modal.
 exports.createDepositRequest = functions.https.onCall(async (data, context) => {
+    // --- Configuration ---
+    // PASTE YOUR TELEGRAM BOT TOKEN AND CHAT ID HERE
     const BOT_TOKEN = "7669964695:AAGnnooQd0FEvyIrwDqWHyvFM43JLiJszfA";
     const CHAT_ID = "7590915954";
 
+    // 1. Check if the user is authenticated
     if (!context.auth) {
-        throw new functions.https.HttpsError("unauthenticated", "You must be logged in.");
+        throw new functions.https.HttpsError("unauthenticated", "You must be logged in to make a deposit.");
     }
 
+    // 2. Get data from the frontend
     const userEmail = context.auth.token.email;
     const amount = data.amount;
     const currency = data.currency;
@@ -24,28 +29,32 @@ exports.createDepositRequest = functions.https.onCall(async (data, context) => {
         return { success: false, error: "Invalid deposit amount or currency." };
     }
 
+    // 3. Create a new transaction in the Firestore database
     const db = admin.firestore();
     const walletRef = db.collection("wallets").doc(userEmail);
     const transactionId = `TX-${Date.now()}`;
 
     const newTransaction = {
         id: transactionId,
-        date: new Date().toISOString().split('T')[0],
+        date: new Date().toISOString().split('T')[0], // Get date in YYYY-MM-DD format
         description: `Pending Deposit - ${currency}`,
         amount: amount,
-        status: "Pending"
+        status: "Pending" // Set the initial status
     };
 
     try {
+        // Add the new transaction to the user's transaction array in the database
         await walletRef.update({
             transactions: admin.firestore.FieldValue.arrayUnion(newTransaction)
         });
 
+        // 4. Prepare and send the Telegram notification with buttons
         const message = `
 🔔 *New Deposit Request* 🔔
 --------------------------------------
 *User:* ${userEmail}
 *Amount:* €${amount.toFixed(2)}
+*Currency:* ${currency}
 *Transaction ID:* \`${transactionId}\`
 --------------------------------------
 Please verify the payment.
@@ -71,11 +80,12 @@ Please verify the payment.
             })
         });
 
+        // 5. Send a success response back to the website
         return { success: true, transactionId: transactionId };
 
     } catch (error) {
         console.error("Error creating deposit:", error);
-        throw new functions.https.HttpsError("internal", "An error occurred.");
+        throw new functions.https.HttpsError("internal", "An error occurred while creating the deposit.");
     }
 });
 
@@ -89,7 +99,7 @@ exports.updateTransaction = functions.https.onRequest(async (req, res) => {
     // Get the data from the Telegram button press
     const callbackQuery = req.body.callback_query;
     if (!callbackQuery) {
-        return res.status(200).send("OK");
+        return res.status(200).send("OK"); // Acknowledge the request from Telegram
     }
 
     const [action, transactionId, userEmail, amountStr] = callbackQuery.data.split('_');
