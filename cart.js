@@ -1,32 +1,21 @@
-// Import the functions you need from the Firebase SDKs
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
-import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-functions.js";
-
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyBS5WvBZgg1Cr0iyFvMj7ciJl4_kxkOIt0",
-  authDomain: "ultcc-shop-project.firebaseapp.com",
-  projectId: "ultcc-shop-project",
-  storageBucket: "ultcc-shop-project.appspot.com",
-  messagingSenderId: "670031756880",
-  appId: "1:670031756880:web:43e14f3f9c12ae8e2b1b55"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const functions = getFunctions(app);
+// This script manages the shopping cart page. It does not need Firebase
+// because it only reads data from the browser's session storage.
+// The secure checkout process is handled by processing.js.
 
 document.addEventListener('DOMContentLoaded', () => {
+    // --- Element References ---
     const cartItemsContainer = document.getElementById('cart-items-container');
     const subtotalEl = document.getElementById('cart-subtotal');
     const totalEl = document.getElementById('cart-total');
     const checkoutBtn = document.getElementById('checkout-btn');
 
-    // --- Load Cart from Session Storage ---
+    // --- Main Function to Load and Display Cart ---
     function loadCart() {
+        // Get cart data from the browser's session storage. If empty, create an empty array.
         const cart = JSON.parse(sessionStorage.getItem('cart')) || [];
-        cartItemsContainer.innerHTML = '';
+        cartItemsContainer.innerHTML = ''; // Clear any old items to prevent duplicates
 
+        // If the cart is empty, show a message and disable the checkout button.
         if (cart.length === 0) {
             cartItemsContainer.innerHTML = '<p class="empty-cart-message">Your cart is empty.</p>';
             checkoutBtn.disabled = true;
@@ -35,10 +24,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         let subtotal = 0;
+        // Loop through each item in the cart and create the HTML for it.
         cart.forEach(item => {
             const itemEl = document.createElement('div');
             itemEl.className = 'cart-item';
-            // Use docId for the data attribute
+            // Use docId for the data attribute to uniquely identify items for removal.
             itemEl.innerHTML = `
                 <div class="cart-item-details">
                     <p class="item-name">${item.name}</p>
@@ -47,36 +37,40 @@ document.addEventListener('DOMContentLoaded', () => {
                 <button class="remove-item-btn" data-doc-id="${item.docId}">&times;</button>
             `;
             cartItemsContainer.appendChild(itemEl);
-            subtotal += item.price;
+            subtotal += item.price; // Add the item's price to the running subtotal.
         });
 
         updateTotals(subtotal);
         checkoutBtn.disabled = false;
     }
 
-    // --- Update Totals ---
+    // --- Function to Update Price Totals ---
     function updateTotals(subtotal) {
         subtotalEl.textContent = `€ ${subtotal.toFixed(2)}`;
         totalEl.textContent = `€ ${subtotal.toFixed(2)}`;
     }
 
-    // --- Remove Item from Cart ---
+    // --- Function to Remove an Item from the Cart ---
     cartItemsContainer.addEventListener('click', (e) => {
+        // Check if the clicked element is a remove button.
         if (e.target.classList.contains('remove-item-btn')) {
             const docIdToRemove = e.target.getAttribute('data-doc-id');
             let cart = JSON.parse(sessionStorage.getItem('cart')) || [];
+            // Filter out the item that was clicked, keeping all others.
             cart = cart.filter(item => item.docId !== docIdToRemove);
+            // Save the updated (smaller) cart back to session storage.
             sessionStorage.setItem('cart', JSON.stringify(cart));
-            loadCart();
+            loadCart(); // Reload the cart display to show the change.
         }
     });
     
-    // --- Checkout Button ---
+    // --- Checkout Button Logic ---
     checkoutBtn.addEventListener('click', () => {
-        // Redirect to the processing page to handle the secure checkout
+        // Redirect to the processing page to handle the secure checkout.
         window.location.href = 'processing.html';
     });
 
     // --- Initial Load ---
+    // Load the cart as soon as the page is ready.
     loadCart();
 });

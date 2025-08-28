@@ -18,18 +18,37 @@
     <!-- Sidebar Navigation -->
     <div class="overlay" id="overlay"></div>
     <nav class="sidebar" id="sidebar">
-        <!-- Sidebar content -->
         <div class="sidebar-header">
             <div class="sidebar-logo">ULT<span>CC</span></div>
-            <button class="close-btn" id="close-btn" aria-label="Close menu">&times;</button>
+            <button class="close-btn" id="close-btn" aria-label="Close menu">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
         </div>
         <ul class="sidebar-nav">
-            <li><a href="index.html" class="nav-link">... Home</a></li>
-            <li><a href="cc_checker.html" class="nav-link">... CC Checker</a></li>
-            <li><a href="wallet.html" class="nav-link">... Wallet</a></li>
-            <li><a href="my_orders.html" class="nav-link">... My Orders</a></li>
-            <li><a href="contact.html" class="nav-link">... Raise Tickets</a></li>
-            <li><a href="faq.html" class="nav-link">... FAQ and Rules</a></li>
+            <li><a href="index.html" class="nav-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                Home
+            </a></li>
+            <li><a href="cc_checker.html" class="nav-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+                CC Checker
+            </a></li>
+            <li><a href="wallet.html" class="nav-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"></path></svg>
+                Wallet
+            </a></li>
+            <li><a href="my_orders.html" class="nav-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                My Orders
+            </a></li>
+            <li><a href="contact.html" class="nav-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                Raise Tickets
+            </a></li>
+            <li><a href="faq.html" class="nav-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                FAQ and Rules
+            </a></li>
         </ul>
     </nav>
 
@@ -39,7 +58,9 @@
             <a href="index.html" class="logo-link">
                 <div class="logo">ULT<span>CC</span></div>
             </a>
-            <button class="hamburger-menu" id="hamburger-btn" aria-label="Open menu">...</button>
+            <button class="hamburger-menu" id="hamburger-btn" aria-label="Open menu">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
             <div class="header-right"></div>
         </header>
 
@@ -50,7 +71,7 @@
                 <div class="cart-items-panel">
                     <h1>Shopping Cart</h1>
                     <div id="cart-items-container">
-                        <!-- Cart items will be loaded here -->
+                        <!-- Cart items will be loaded here by JavaScript -->
                     </div>
                 </div>
 
@@ -74,7 +95,8 @@
     </div>
 
     <script src="script.js"></script>
-    <script src="cart.js"></script>
+    <!-- The crucial fix: adding type="module" -->
+    <script type="module" src="cart.js"></script>
     <script src="splash.js"></script>
 </body>
 </html>
