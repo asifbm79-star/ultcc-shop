@@ -79,24 +79,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
                     </button>
                 </div>
-                
             </section>
-            <section id="friday-crate-section" class="friday-crate-section">
-    <h2>Only Friday Crate</h2>
-    <div class="crate-content">
-        <div class="crate-details">
-            <h3>The Week's Best Selection</h3>
-            <p>Get a curated crate of 10 high-quality, premium cards from top-tier banks. Available for pre-order every Friday!</p>
-            <span class="crate-price">€65.00</span>
-        </div>
-        <div class="crate-action">
-            <button id="preorder-btn" class="action-button">
-                <!-- Button text will be set by JavaScript -->
-            </button>
-            <p id="crate-timer" class="crate-timer"></p>
-        </div>
-    </div>
-</section>
             
             <section class="search-section">
                 <h2>Search</h2>
@@ -134,7 +117,8 @@
     </div>
 
     <script src="script.js"></script>
-    <script src="index_logic.js"></script>
+    <!-- The crucial fix: adding type="module" -->
+    <script type="module" src="index_logic.js"></script>
     <script src="splash.js"></script>
 </body>
 </html>

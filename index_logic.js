@@ -17,51 +17,60 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 document.addEventListener('DOMContentLoaded', () => {
-    let allCards = [];
+    let allCards = []; // This will store the master list of all cards from the database
 
     // --- Element References ---
     const countrySelect = document.getElementById('country-select');
+    const bankSelect = document.getElementById('bank-select');
+    const zipSelect = document.getElementById('zip-select');
     const binInput = document.getElementById('bin-search');
     const resultsTbody = document.getElementById('card-results-tbody');
-    const preorderBtn = document.getElementById('preorder-btn');
-    const crateTimerEl = document.getElementById('crate-timer');
-
+    
     // --- Main Function to Load Card Data from Firestore ---
     async function loadCardData() {
         try {
             const cardsCol = collection(db, 'cards');
             const cardSnapshot = await getDocs(cardsCol);
-            // Get both data and the document ID for each card
+            // Map over the documents to get the data and the unique document ID for each card
             const cardList = cardSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             
+            // Process and sort the cards to show available ones first
             allCards = processAndSortCards(cardList);
+            // Display the sorted cards in the table
             renderTable(allCards);
         } catch (error) {
             console.error("Card Load Error:", error);
-            resultsTbody.innerHTML = `<tr><td colspan="8" style="text-align: center;">Could not load cards. Check security rules.</td></tr>`;
+            resultsTbody.innerHTML = `<tr><td colspan="8" style="text-align: center;">Could not load cards. Please check security rules.</td></tr>`;
         }
     }
     
     // --- Logic for Sorting and Display ---
     function processAndSortCards(cards) {
+        // Define the sort order: 'available' items are more important than 'sold' items
         const statusOrder = { 'available': 1, 'sold': 2 };
+
         const processed = cards.map(card => {
+            // Create the correct button based on the card's status from the database
             const button = (card.status === 'available')
                 ? `<button class="action-button-small buy-btn" data-doc-id="${card.id}">Buy Now</button>`
                 : `<button class="action-button-small sold-btn" disabled>Sold</button>`;
         
+            // Return a new object for each card with the button HTML and a sort order value
             return { ...card, buttonHTML: button, sortOrder: statusOrder[card.status] || 3 };
         });
+
+        // Sort the entire list based on the sortOrder value
         return processed.sort((a, b) => a.sortOrder - b.sortOrder);
     }
 
-    // --- Render the Results Table ---
+    // --- Function to Render the Results Table ---
     function renderTable(cards) {
-        resultsTbody.innerHTML = '';
+        resultsTbody.innerHTML = ''; // Clear any previous content
         if (cards.length === 0) {
             resultsTbody.innerHTML = `<tr><td colspan="8" style="text-align: center;">No matching cards found.</td></tr>`;
             return;
         }
+        // Create an HTML table row for each card and add it to the table
         cards.forEach(card => {
             const row = `
                 <tr>
@@ -82,20 +91,24 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Add to Cart Logic ---
     if (resultsTbody) {
         resultsTbody.addEventListener('click', (e) => {
+            // Check if a "Buy Now" button was clicked
             if (e.target.classList.contains('buy-btn')) {
                 const docId = e.target.getAttribute('data-doc-id');
                 const cardData = allCards.find(c => c.id === docId);
+                
                 if (cardData) {
                     const cartItem = {
                         docId: cardData.id,
                         name: `${cardData.address.country} - ${cardData.brand} - ${cardData.level}`,
                         price: cardData.price
                     };
+                    
                     let cart = JSON.parse(sessionStorage.getItem('cart')) || [];
+                    // Prevent adding the same item to the cart twice
                     if (!cart.some(item => item.docId === docId)) {
                         cart.push(cartItem);
                         sessionStorage.setItem('cart', JSON.stringify(cart));
-                        window.location.href = 'cart.html';
+                        window.location.href = 'cart.html'; // Redirect to the cart page
                     } else {
                         alert('This item is already in your cart.');
                     }
@@ -105,9 +118,45 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // --- Filter Logic ---
-    // (This section remains the same, it is for UI only)
+    const searchData = { "France": { code: "FR" } }; // Simplified for the current card stock
+    function populateCountries() {
+        Object.keys(searchData).sort().forEach(country => {
+            const option = document.createElement('option');
+            option.value = country;
+            option.textContent = country;
+            countrySelect.appendChild(option);
+        });
+    }
+
+    function filterAndRender() {
+        const countryFilter = countrySelect.value;
+        const binFilter = binInput.value.trim();
+        let filteredCards = allCards;
+
+        // Filter the master list based on the selected country
+        if (countryFilter && searchData[countryFilter]) {
+            const countryCode = searchData[countryFilter].code;
+            filteredCards = filteredCards.filter(card => card.address.country === countryCode);
+        }
+        
+        // Further filter the list based on the BIN input
+        if (binFilter) {
+            filteredCards = filteredCards.filter(card => card.bin.startsWith(binFilter));
+        }
+
+        // Re-render the table with the filtered results
+        renderTable(filteredCards);
+    }
+    
+    // --- Event Listeners ---
+    [binInput, countrySelect].forEach(el => {
+        if(el) {
+            el.addEventListener('input', filterAndRender);
+            el.addEventListener('change', filterAndRender);
+        }
+    });
     
     // --- Initial Load ---
+    populateCountries();
     loadCardData();
-    // ... (Friday Crate logic remains the same)
 });
