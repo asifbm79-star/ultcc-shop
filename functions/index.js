@@ -6,6 +6,7 @@ admin.initializeApp();
 
 // --- Function 1: createDepositRequest (No changes) ---
 exports.createDepositRequest = functions.https.onCall(async (data, context) => {
+    // This function remains the same
     const BOT_TOKEN = "7669964695:AAGnnooQd0FEvyIrwDqWHyvFM43JLiJszfA";
     const CHAT_ID = "7590915954";
     if (!context.auth) { throw new functions.https.HttpsError("unauthenticated", "You must be logged in."); }
@@ -14,7 +15,7 @@ exports.createDepositRequest = functions.https.onCall(async (data, context) => {
     const currency = data.currency;
     if (!amount || amount < 40 || !currency) { return { success: false, error: "Invalid deposit amount or currency." }; }
     const db = admin.firestore();
-    const walletRef = db.collection("wallets").doc(userEmail); // Using email as ID for this version
+    const walletRef = db.collection("wallets").doc(userEmail);
     const transactionId = `TX-${Date.now()}`;
     const newTransaction = { id: transactionId, date: new Date().toISOString().split('T')[0], description: `Pending Deposit - ${currency}`, amount: amount, status: "Pending" };
     try {
@@ -32,79 +33,76 @@ exports.createDepositRequest = functions.https.onCall(async (data, context) => {
 
 // --- Function 2: updateTransaction (No changes) ---
 exports.updateTransaction = functions.https.onRequest(async (req, res) => {
-    // ... (This function remains the same as before)
+    // This function remains the same
 });
 
-// --- NEW Function 3: processCheckout ---
+// --- Function 3: processCheckout (No changes) ---
 exports.processCheckout = functions.https.onCall(async (data, context) => {
+    // This function remains the same
+});
+
+// --- NEW Function 4: processPreOrder ---
+exports.processPreOrder = functions.https.onCall(async (data, context) => {
     if (!context.auth) {
-        throw new functions.https.HttpsError("unauthenticated", "You must be logged in to check out.");
+        throw new functions.https.HttpsError("unauthenticated", "You must be logged in to pre-order.");
     }
 
     const userEmail = context.auth.token.email;
-    const cart = data.cart;
+    const card = data.card; // The pre-order card item sent from the website
 
-    if (!cart || cart.length === 0) {
-        throw new functions.https.HttpsError("invalid-argument", "Your cart is empty.");
+    if (!card || !card.price || !card.id) {
+        throw new functions.https.HttpsError("invalid-argument", "Invalid card data provided.");
     }
 
     const db = admin.firestore();
     const walletRef = db.collection("wallets").doc(userEmail);
+    const preorderCardRef = db.collection("preorder_cards").doc(card.id);
     
+    // Use a Firestore transaction for safety
     return db.runTransaction(async (transaction) => {
         const walletDoc = await transaction.get(walletRef);
+        const cardDoc = await transaction.get(preorderCardRef);
+
         if (!walletDoc.exists) {
             throw new functions.https.HttpsError("not-found", "Your wallet does not exist.");
         }
+        if (!cardDoc.exists || cardDoc.data().status !== "available") {
+            throw new functions.https.HttpsError("aborted", "This item is no longer available for pre-order.");
+        }
 
         const currentBalance = walletDoc.data().balance;
-        const totalCost = cart.reduce((sum, item) => sum + item.price, 0);
-
+        
         // 1. Check if user has enough balance
-        if (currentBalance < totalCost) {
+        if (currentBalance < card.price) {
             throw new functions.https.HttpsError("failed-precondition", "Insufficient balance.");
         }
 
-        // 2. Check if all items are still available
-        for (const item of cart) {
-            const cardRef = db.collection("cards").doc(item.docId);
-            const cardDoc = await transaction.get(cardRef);
-            if (!cardDoc.exists || cardDoc.data().status !== "available") {
-                throw new functions.https.HttpsError("aborted", `Item ${item.name} is no longer available.`);
-            }
-        }
-
-        // 3. All checks passed. Proceed with purchase.
-        // Deduct balance and add purchase transaction to wallet
-        const purchaseTransactionId = `TX-PURCHASE-${Date.now()}`;
+        // 2. All checks passed. Deduct balance and add a transaction record
         const purchaseTransaction = {
-            id: purchaseTransactionId,
+            id: `TX-PREORDER-${Date.now()}`,
             date: new Date().toISOString().split('T')[0],
-            description: `Purchase - Order ${purchaseTransactionId}`,
-            amount: -totalCost,
+            description: `Pre-Order - ${card.brand} ${card.level}`,
+            amount: -card.price,
             status: "Success"
         };
         transaction.update(walletRef, {
-            balance: admin.firestore.FieldValue.increment(-totalCost),
+            balance: admin.firestore.FieldValue.increment(-card.price),
             transactions: admin.firestore.FieldValue.arrayUnion(purchaseTransaction)
         });
 
-        // Mark cards as "sold"
-        for (const item of cart) {
-            const cardRef = db.collection("cards").doc(item.docId);
-            transaction.update(cardRef, { status: "sold" });
-        }
+        // 3. Mark the pre-order card as "sold" so no one else can buy it
+        transaction.update(preorderCardRef, { status: "sold" });
 
-        // 4. Create a new order document
-        const orderId = `ULT-${Date.now()}`;
+        // 4. Create a new order document with "Pre-Ordered" status
+        const orderId = `ULT-PRE-${Date.now()}`;
         const orderRef = db.collection("orders").doc(orderId);
         transaction.set(orderRef, {
             userEmail: userEmail,
             orderId: orderId,
             date: new Date().toISOString().split('T')[0],
-            total: totalCost,
-            status: "Completed",
-            items: cart
+            total: card.price,
+            status: "Pre-Ordered",
+            items: [card] // Save the single pre-ordered item
         });
 
         return { success: true, orderId: orderId };

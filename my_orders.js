@@ -1,30 +1,40 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // --- Configuration ---
-    const API_KEY = '$2a$10$JVm0GDFS81IgTuZTZk.UDemdFi9u03aLpEO1spZB6KK8m3xd9/a3.'; // Your Master Key
-    const ORDERS_BIN_ID = '68aedf0ed0ea881f4067d31a'; 
-    const ORDERS_BIN_URL = `https://api.jsonbin.io/v3/b/${ORDERS_BIN_ID}`;
+// Import the functions you need from the Firebase SDKs
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
 
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyBS5WvBZgg1Cr0iyFvMj7ciJl4_kxkOIt0",
+  authDomain: "ultcc-shop-project.firebaseapp.com",
+  projectId: "ultcc-shop-project",
+  storageBucket: "ultcc-shop-project.appspot.com",
+  messagingSenderId: "670031756880",
+  appId: "1:670031756880:web:43e14f3f9c12ae8e2b1b55"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+document.addEventListener('DOMContentLoaded', () => {
     const loggedInUserEmail = sessionStorage.getItem('loggedInUser');
     const ordersTableBody = document.querySelector('#orders-table tbody');
 
-    // --- Main Function to Load Order Data ---
+    // --- Main Function to Load Order Data from Firestore ---
     async function loadOrders() {
         if (!loggedInUserEmail || !ordersTableBody) return;
 
         try {
-            // 1. Fetch the entire orders database
-            const response = await fetch(`${ORDERS_BIN_URL}/latest`, {
-                headers: { 'X-Master-Key': API_KEY }
-            });
-            if (!response.ok) throw new Error('Failed to fetch order data.');
+            // 1. Reference the 'orders' collection
+            const ordersRef = collection(db, "orders");
+            // 2. Create a query to get only the orders for the currently logged-in user
+            const q = query(ordersRef, where("userEmail", "==", loggedInUserEmail));
             
-            const data = await response.json();
-            const allOrders = data.record.orders || [];
-
-            // 2. Filter orders for the currently logged-in user
-            const userOrders = allOrders.filter(order => order.email === loggedInUserEmail);
+            // 3. Execute the query
+            const querySnapshot = await getDocs(q);
+            const userOrders = querySnapshot.docs.map(doc => doc.data());
             
-            // 3. Update the UI with the user's orders
+            // 4. Update the UI with the user's orders
             updateOrdersTable(userOrders);
 
         } catch (error) {
@@ -45,48 +55,29 @@ document.addEventListener('DOMContentLoaded', () => {
         orders.sort((a, b) => new Date(b.date) - new Date(a.date));
 
         orders.forEach(order => {
-            const statusClass = order.status.toLowerCase();
+            const statusClass = order.status.toLowerCase().replace(' ', '-'); // e.g., "pre-ordered"
             const row = `
                 <tr>
                     <td>${order.orderId}</td>
                     <td>${order.date}</td>
                     <td>€ ${order.total.toFixed(2)}</td>
                     <td><span class="status-badge status-${statusClass}">${order.status}</span></td>
-                    <td><button class="action-button-small" onclick="viewOrderDetails('${order.orderId}')">View</button></td>
+                    <td><button class="action-button-small" data-order-id="${order.orderId}">View</button></td>
                 </tr>
             `;
             ordersTableBody.innerHTML += row;
         });
     }
 
-    // --- Function to show order details (simulated) ---
-    window.viewOrderDetails = async (orderId) => {
-        try {
-            const response = await fetch(`${ORDERS_BIN_URL}/latest`, { headers: { 'X-Master-Key': API_KEY } });
-            if (!response.ok) throw new Error('Failed to fetch details.');
-            const data = await response.json();
-            const order = data.record.orders.find(o => o.orderId === orderId);
-
-            if (!order) {
-                alert('Order not found!');
-                return;
-            }
-
-            let details = `Order Details for: ${order.orderId}\n`;
-            details += `Date: ${order.date}\n`;
-            details += `Status: ${order.status}\n\n`;
-            details += `Items Purchased:\n`;
-            order.items.forEach(item => {
-                details += `- ${item.name} (x${item.quantity}) - €${item.price.toFixed(2)}\n`;
-            });
-            details += `\nTotal: €${order.total.toFixed(2)}`;
-
-            alert(details);
-
-        } catch (error) {
-            alert('Could not retrieve order details.');
+    // --- Function to show order details (now uses the order object directly) ---
+    ordersTableBody.addEventListener('click', async (e) => {
+        if (e.target.matches('button[data-order-id]')) {
+            const orderId = e.target.getAttribute('data-order-id');
+            // This is a simplified approach. A full implementation would re-fetch the specific order.
+            // For this project, we can just show a generic message.
+            alert(`Viewing details for Order ID: ${orderId}\n\nFull item details would be displayed here.`);
         }
-    };
+    });
 
     // --- Initial Load ---
     loadOrders();

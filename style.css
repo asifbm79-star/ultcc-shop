@@ -1081,3 +1081,9 @@ body {
     background-color: var(--light-violet) !important;
     border-color: var(--light-violet) !important;
 }
+/* Add this new style to the end of your existing style.css file */
+
+.status-pre-ordered {
+    background-color: rgba(108, 92, 231, 0.1);
+    color: var(--primary-violet);
+}
