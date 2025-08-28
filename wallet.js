@@ -1,7 +1,6 @@
 // Import the functions you need from the Firebase SDKs
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
-import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
-import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-functions.js";
+import { getFirestore, doc, onSnapshot, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -16,7 +15,6 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const functions = getFunctions(app);
 
 document.addEventListener('DOMContentLoaded', () => {
     const loggedInUserEmail = sessionStorage.getItem('loggedInUser');
@@ -57,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (doc.exists()) {
                 updateUI(doc.data());
             } else {
-                console.log("No wallet found for user! This should not happen if registration is correct.");
+                console.log("No wallet found for user!");
                 updateUI({ balance: 0, transactions: [] });
             }
         }, (error) => {
@@ -82,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <td>${tx.id}</td>
                         <td>${tx.date}</td>
                         <td>${tx.description}</td>
-                        <td class="${amountClass}">€ ${tx.amount.toFixed(2)}</td>
+                        <td class="${amountClass}">${tx.status ? `<span class="status-badge status-${tx.status.toLowerCase()}">${tx.status}</span>` : ''} € ${tx.amount.toFixed(2)}</td>
                     </tr>
                 `;
                 transactionsTableBody.innerHTML += row;
@@ -140,30 +138,32 @@ document.addEventListener('DOMContentLoaded', () => {
         const amount = parseFloat(document.getElementById('deposit-amount').value);
         const currency = document.getElementById('crypto-select').value;
         
-        if (amount > 200) {
-            alert('Maximum deposit amount is 200 EUR.');
-            return;
-        }
-        
-        const createDeposit = httpsCallable(functions, 'createDepositRequest');
-        
+        const submitBtn = depositForm.querySelector('.submit-btn');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Creating...';
+
         try {
-            const submitBtn = depositForm.querySelector('.submit-btn');
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Creating...';
+            const walletRef = doc(db, "wallets", loggedInUserEmail);
+            const transactionId = `TX-${Date.now()}`;
+            const newTransaction = {
+                id: transactionId,
+                date: new Date().toISOString().split('T')[0],
+                description: `Deposit via ${currency}`,
+                amount: amount,
+                status: "Pending" // This is what your PC script will look for
+            };
 
-            const result = await createDeposit({ amount: amount, currency: currency });
+            // Add the pending transaction to the database
+            await updateDoc(walletRef, {
+                transactions: arrayUnion(newTransaction)
+            });
 
-            if (result.data.success) {
-                showPaymentDetails(currency, amount);
-            } else {
-                alert('Error: ' + result.data.error);
-            }
+            showPaymentDetails(currency, amount);
+
         } catch (error) {
-            console.error("Error calling Firebase Function:", error);
-            alert('Could not create deposit request. The backend function may not be deployed yet.');
+            console.error("Error creating deposit request:", error);
+            alert("Could not create deposit request. Please try again.");
         } finally {
-            const submitBtn = depositForm.querySelector('.submit-btn');
             submitBtn.disabled = false;
             submitBtn.textContent = 'Create';
         }
