@@ -1,0 +1,12 @@
+[
+  { "bin": "522125", "brand": "Mastercard", "level": "PLATINUM", "type": "CREDIT", "expire": "07/27", "address": { "city": "London", "state": "ENG", "zip": "SW1A 0AA", "country": "UK" }, "price": 12.50, "status": "available" },
+  { "bin": "491724", "brand": "Visa", "level": "BUSINESS", "type": "DEBIT", "expire": "02/28", "address": { "city": "Manchester", "state": "ENG", "zip": "M1 1AE", "country": "UK" }, "price": 10.00, "status": "available" },
+  { "bin": "557323", "brand": "Mastercard", "level": "WORLD ELITE", "type": "CREDIT", "expire": "10/25", "address": { "city": "Toronto", "state": "ON", "zip": "M5H 2N2", "country": "Canada" }, "price": 15.00, "status": "available" },
+  { "bin": "450644", "brand": "Visa", "level": "INFINITE", "type": "CREDIT", "expire": "05/29", "address": { "city": "Vancouver", "state": "BC", "zip": "V6C 3L6", "country": "Canada" }, "price": 18.00, "status": "available" },
+  { "bin": "535823", "brand": "Mastercard", "level": "CORPORATE", "type": "DEBIT", "expire": "09/26", "address": { "city": "Sydney", "state": "NSW", "zip": "2000", "country": "Australia" }, "price": 11.50, "status": "available" },
+  { "bin": "402400", "brand": "Visa", "level": "SIGNATURE", "type": "CREDIT", "expire": "01/27", "address": { "city": "Melbourne", "state": "VIC", "zip": "3000", "country": "Australia" }, "price": 14.00, "status": "available" },
+  { "bin": "518949", "brand": "Mastercard", "level": "PLATINUM", "type": "CREDIT", "expire": "11/28", "address": { "city": "Berlin", "state": "BE", "zip": "10117", "country": "Germany" }, "price": 13.00, "status": "available" },
+  { "bin": "479244", "brand": "Visa", "level": "GOLD", "type": "DEBIT", "expire": "06/25", "address": { "city": "Munich", "state": "BY", "zip": "80331", "country": "Germany" }, "price": 9.50, "status": "available" },
+  { "bin": "374201", "brand": "Amex", "level": "PLATINUM", "type": "CREDIT", "expire": "01/30", "address": { "city": "New York", "state": "NY", "zip": "10001", "country": "USA" }, "price": 25.00, "status": "available" },
+  { "bin": "601100", "brand": "Discover", "level": "IT CARD", "type": "CREDIT", "expire": "09/29", "address": { "city": "Chicago", "state": "IL", "zip": "60601", "country": "USA" }, "price": 8.00, "status": "available" }
+]

@@ -1064,3 +1064,20 @@ body {
 @keyframes spin {
     to { transform: rotate(360deg); }
 }
+.results-section h2 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: #fff;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.preorder-btn {
+    background-color: var(--primary-violet);
+    border-color: var(--primary-violet);
+    color: #fff;
+}
+.preorder-btn:hover {
+    background-color: var(--light-violet) !important;
+    border-color: var(--light-violet) !important;
+}
