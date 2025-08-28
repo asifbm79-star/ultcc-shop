@@ -1,1 +1,3 @@
 pc_backend/serviceAccountKey.json
+pc_backend/node_modules/*
+pc_backend
