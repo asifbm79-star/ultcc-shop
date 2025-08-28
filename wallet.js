@@ -36,26 +36,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const copyAddressBtn = document.getElementById('copy-address-btn');
     const timerDisplay = document.getElementById('timer-display');
 
-    // --- Fake Address Generator ---
-    const fakeAddresses = {
-        BTC: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh',
-        ETH: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F',
-        LTC: 'ltc1q3h2v5f9w2j9s6g7y8x0z1c3b4a5d6e7f8g9h0',
-        USDT: '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9',
-        XMR: '44AFFq5kSiGBoZ4NMDwYtN18obc8A5S3jSHytLwsVLhG8i3QF8gBZH46'
+    // --- NEW: Real Wallet Addresses ---
+    const realAddresses = {
+        BTC: 'bc1qvq4d9a2jv56vwqyh6mfkl4mqh60p6d03anrngl',
+        ETH: '0x15a9CC40D777890218f17FE26273144536bFFfd8',
+        LTC: 'LfeVEUGovMzzG2xzmGfUfnfHrKJ8RiDLq8'
     };
 
-    // --- Main Function to Load Wallet Data (Real-time from Firestore) ---
+    // --- Main Function to Load Wallet Data ---
     function loadWalletData() {
         if (!loggedInUserEmail) return;
-
         const walletRef = doc(db, "wallets", loggedInUserEmail);
-        
         onSnapshot(walletRef, (doc) => {
             if (doc.exists()) {
                 updateUI(doc.data());
             } else {
-                console.log("No wallet found for user!");
                 updateUI({ balance: 0, transactions: [] });
             }
         }, (error) => {
@@ -116,7 +111,6 @@ document.addEventListener('DOMContentLoaded', () => {
         modalOverlay.style.display = 'none';
         clearInterval(depositTimer);
     }
-
     newDepositBtn.addEventListener('click', showModal);
     closeModalBtn.addEventListener('click', hideModal);
     backToDepositBtn.addEventListener('click', () => {
@@ -137,11 +131,9 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         const amount = parseFloat(document.getElementById('deposit-amount').value);
         const currency = document.getElementById('crypto-select').value;
-        
         const submitBtn = depositForm.querySelector('.submit-btn');
         submitBtn.disabled = true;
         submitBtn.textContent = 'Creating...';
-
         try {
             const walletRef = doc(db, "wallets", loggedInUserEmail);
             const transactionId = `TX-${Date.now()}`;
@@ -150,16 +142,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 date: new Date().toISOString().split('T')[0],
                 description: `Deposit via ${currency}`,
                 amount: amount,
-                status: "Pending" // This is what your PC script will look for
+                status: "Pending"
             };
-
-            // Add the pending transaction to the database
             await updateDoc(walletRef, {
                 transactions: arrayUnion(newTransaction)
             });
-
             showPaymentDetails(currency, amount);
-
         } catch (error) {
             console.error("Error creating deposit request:", error);
             alert("Could not create deposit request. Please try again.");
@@ -171,7 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Show Payment Details Logic ---
     function showPaymentDetails(currency, amount) {
-        const address = fakeAddresses[currency];
+        const address = realAddresses[currency];
         paymentAmountEl.textContent = `€${amount.toFixed(2)}`;
         paymentCurrencyEl.textContent = currency;
         cryptoAddressInput.value = address;
