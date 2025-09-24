@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const realAddresses = {
         BTC: 'bc1qvq4d9a2jv56vwqyh6mfkl4mqh60p6d03anrngl',
         ETH: '0x15a9CC40D777890218f17FE26273144536bFFfd8',
-        LTC: 'LfeVEUGovMzzG2xzmGfUfnfHrKJ8RiDLq8'
+        LTC: 'LLiefmMxiZNv63UgwsAa7zJJ5VqYP1B8F6'
     };
 
     // --- Main Function to Load Wallet Data ---
